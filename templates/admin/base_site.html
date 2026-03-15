@@ -3,7 +3,7 @@
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">
-    <img src="{% static 'assets/icons/logo-navy-red.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
+    <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
     Ansari Aluminium Administration
 </a></h1>
 {% endblock %}
@@ -12,13 +12,13 @@
 {{ block.super }}
 <style>
     :root {
-        /* Primary - Navy Blue */
-        --primary: #0F2C59;
-        --primary-fg: #fff;
+        /* Primary - Charcoal */
+        --primary: #0F0F1A;
+        --primary-fg: #F5F0E8;
         
-        /* Secondary - Red */
-        --secondary: #DE1B1B;
-        --accent: #DE1B1B;
+        /* Secondary - Gold */
+        --secondary: #D4A853;
+        --accent: #D4A853;
         
         /* Header */
         --header-bg: var(--primary);
@@ -26,30 +26,30 @@
         --header-link-color: var(--primary-fg);
         
         /* Links */
-        --link-fg: var(--primary);
-        --link-hover-color: var(--secondary);
-        --link-selected-fg: var(--secondary);
+        --link-fg: var(--secondary);
+        --link-hover-color: #E0BC72;
+        --link-selected-fg: #E0BC72;
         
         /* Buttons */
-        --button-bg: var(--primary);
-        --button-fg: var(--primary-fg);
-        --button-hover-bg: #0A1E3D; /* Darker Navy */
+        --button-bg: var(--secondary);
+        --button-fg: var(--primary);
+        --button-hover-bg: #E0BC72; 
         --default-button-bg: var(--secondary);
-        --default-button-hover-bg: #B51515; /* Darker Red */
+        --default-button-hover-bg: #E0BC72; 
         
         /* Modules */
         --module-bg: #fff;
-        --module-hover-bg: #F6F8FB; /* Light Gray from theme */
+        --module-hover-bg: #F6F8FB; 
         
         /* Sidebar */
-        --sidebar-bg: #f8f9fa;
-        --sidebar-link-fg: #333;
-        --sidebar-link-selected-bg: #fff;
+        --sidebar-bg: #1A1A2E;
+        --sidebar-link-fg: #F5F0E8;
+        --sidebar-link-selected-bg: #16213E;
     }
     
     /* Login Page Specifics */
     body.login {
-        background: #F6F8FB;
+        background: #1A1A2E;
     }
     
     body.login #header {
@@ -57,16 +57,17 @@
     }
     
     .login .submit-row input {
-        background: var(--primary);
+        background: var(--secondary);
+        color: var(--primary);
     }
     
     .login .submit-row input:hover {
         background: var(--button-hover-bg);
     }
     
-    /* Logo styling in header */
+    /* Logo styling in header (removed invert since logo has dark/gold colors now, just ensure it scales right) */
     #site-name img {
-        filter: brightness(0) invert(1); /* Make logo white for dark header */
+        display: inline-block;
     }
 </style>
 {% endblock %}

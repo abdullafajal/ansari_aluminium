@@ -165,8 +165,8 @@
     <!-- Mobile App Header (Fixed Top) -->
     <header id="mobile-app-header" class="md:hidden fixed top-0 left-0 right-0 h-16 bg-dark/95 backdrop-blur-xl z-50 flex items-center justify-between px-4 border-b border-dark-border pt-safe-top transition-transform duration-300">
         <a href="{% url 'website:home' %}" class="flex items-center gap-2">
-            <span class="text-xl font-bold tracking-tight text-gold-gradient">Ansari</span>
-            <span class="text-xl font-light tracking-tight text-cream/80">Aluminium</span>
+            <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-8 w-auto">
+            <span class="text-xl font-light tracking-tight text-cream/80 hidden sm:inline">Aluminium</span>
         </a>
         
         <div class="flex items-center gap-2">
@@ -186,9 +186,9 @@
     <header class="hidden md:block fixed top-0 w-full z-50 transition-all duration-300 glass-nav" id="main-header">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <!-- Logo -->
-            <a href="{% url 'website:home' %}" class="flex items-center gap-2 group">
-                <span class="text-xl font-bold tracking-tight text-gold-gradient">Ansari</span>
-                <span class="text-xl font-light tracking-tight text-cream/70 group-hover:text-cream transition-colors">Aluminium</span>
+            <a href="{% url 'website:home' %}" class="flex items-center gap-3 group">
+                <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-10 w-auto group-hover:opacity-90 transition-opacity">
+                <span class="text-xl font-light tracking-tight text-cream/80 group-hover:text-cream transition-colors">Aluminium</span>
             </a>
 
             <!-- Desktop Nav -->
@@ -356,35 +356,34 @@
         </div>
     </footer>
 
-    <!-- Bottom Mobile Navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-dark/95 backdrop-blur-xl border-t border-dark-border pb-safe z-50 flex justify-around items-center px-2 py-2">
-        <a href="{% url 'website:home' %}" class="flex flex-col items-center p-2 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'home' %}text-primary{% else %}text-cream/40 hover:text-cream/60{% endif %}">
-            <span class="material-icons-outlined {% if request.resolver_match.url_name == 'home' %}text-2xl{% else %}text-xl{% endif %}">home</span>
-            <span class="text-[10px] font-medium mt-0.5">Home</span>
-        </a>
-        
-        <a href="{% url 'website:products' %}" class="flex flex-col items-center p-2 rounded-lg transition-all duration-300 {% if 'products' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40 hover:text-cream/60{% endif %}">
-            <span class="material-icons-outlined {% if 'products' in request.resolver_match.url_name %}text-2xl{% else %}text-xl{% endif %}">category</span>
-            <span class="text-[10px] font-medium mt-0.5">Products</span>
-        </a>
-        
-        <!-- Floating FAB for Quote -->
-        <a href="{% url 'website:contact' %}" class="flex flex-col items-center justify-center -mt-8">
-            <div class="w-14 h-14 rounded-full bg-primary text-dark shadow-gold-md flex items-center justify-center transform active:scale-95 transition-all outline outline-4 outline-dark">
-                <span class="material-icons-outlined text-2xl">chat</span>
-            </div>
-            <span class="text-[10px] font-medium mt-1 text-cream/40">Quote</span>
-        </a>
+    <!-- Bottom Mobile Navigation (Floating Pill) -->
+    <nav class="md:hidden fixed bottom-6 left-6 right-6 bg-[#0F0F1A] rounded-full shadow-2xl z-50 px-6 py-3 border border-dark-border/50" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
+        <div class="flex items-center justify-between w-full">
+            <!-- Home -->
+            <a href="{% url 'website:home' %}" class="flex flex-col items-center p-2 {% if request.resolver_match.url_name == 'home' %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
+                <span class="material-icons-outlined">home</span>
+            </a>
+            
+            <!-- Products -->
+            <a href="{% url 'website:products' %}" class="flex flex-col items-center p-2 {% if 'products' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
+                <span class="material-icons-outlined">category</span>
+            </a>
+            
+            <!-- Contact / Quote (Center) -->
+            <a href="{% url 'website:contact' %}" class="flex flex-col items-center p-2 {% if 'contact' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
+                <span class="material-icons-outlined">chat</span>
+            </a>
 
-        <a href="{% url 'website:portfolio' %}" class="flex flex-col items-center p-2 rounded-lg transition-all duration-300 {% if 'portfolio' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40 hover:text-cream/60{% endif %}">
-            <span class="material-icons-outlined {% if 'portfolio' in request.resolver_match.url_name %}text-2xl{% else %}text-xl{% endif %}">collections</span>
-            <span class="text-[10px] font-medium mt-0.5">Portfolio</span>
-        </a>
+            <!-- Portfolio -->
+            <a href="{% url 'website:portfolio' %}" class="flex flex-col items-center p-2 {% if 'portfolio' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
+                <span class="material-icons-outlined">collections</span>
+            </a>
 
-        <a href="{% url 'website:about' %}" class="flex flex-col items-center p-2 rounded-lg transition-all duration-300 {% if 'about' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40 hover:text-cream/60{% endif %}">
-            <span class="material-icons-outlined {% if 'about' in request.resolver_match.url_name %}text-2xl{% else %}text-xl{% endif %}">info</span>
-            <span class="text-[10px] font-medium mt-0.5">About</span>
-        </a>
+            <!-- About -->
+            <a href="{% url 'website:about' %}" class="flex flex-col items-center p-2 {% if 'about' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
+                <span class="material-icons-outlined">info</span>
+            </a>
+        </div>
     </nav>
     
     <!-- Add padding to bottom of footer to account for mobile nav -->

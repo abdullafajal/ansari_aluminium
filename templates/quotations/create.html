@@ -7,31 +7,38 @@
 <style>
     .ts-wrapper { border: none !important; }
     .ts-control {
-        border: 2px solid #CAC4D0 !important;
+        border: 2px solid #2A2A4A !important;
         border-radius: 0.75rem !important;
         padding: 0.75rem 1rem !important;
-        background: white !important;
+        background: #1A1A2E !important;
+        color: #F5F0E8 !important;
         font-size: 0.95rem !important;
     }
+    .ts-control input {
+        color: #F5F0E8 !important;
+    }
     .ts-control:focus, .ts-wrapper.focus .ts-control {
-        border-color: #0F2C59 !important;
-        box-shadow: 0 0 0 3px rgba(15, 44, 89, 0.1) !important;
+        border-color: #D4A853 !important;
+        box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.1) !important;
     }
     .ts-dropdown {
         border-radius: 0.75rem !important;
-        border: 1px solid #E0E0E0 !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        border: 1px solid #2A2A4A !important;
+        background: #16213E !important;
+        color: #F5F0E8 !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
         margin-top: 4px !important;
     }
     .ts-dropdown .option {
         padding: 0.75rem 1rem !important;
+        color: #F5F0E8 !important;
     }
     .ts-dropdown .option.active {
-        background: #D4E3FF !important;
-        color: #0F2C59 !important;
+        background: rgba(212, 168, 83, 0.15) !important;
+        color: #D4A853 !important;
     }
     .ts-dropdown .option:hover {
-        background: #F3F6FA !important;
+        background: #1E2A4A !important;
     }
 </style>
 {% endblock %}
@@ -107,7 +114,7 @@
         
         <div id="items-container" class="space-y-3">
             <!-- Item Template -->
-            <div class="item-row p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg border border-dark-border">
+            <div class="item-row p-4 bg-dark-elevated rounded-lg border border-dark-border">
                 <div class="flex items-start gap-2 mb-3 lg:hidden">
                     <span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded-lg">Item 1</span>
                     <button type="button" onclick="removeItem(this)" class="ml-auto p-1 text-cream/30 hover:text-red-500 transition-m3 hidden remove-btn">
@@ -201,12 +208,12 @@
     </div>
     
     <!-- Action Buttons -->
-    <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-4 btn-primary text-white rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
-            <span class="material-icons-outlined">check_circle</span>
+    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-dark-border">
+        <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-4 btn-primary text-dark rounded-xl font-semibold text-lg shadow-gold-sm hover:shadow-gold-md hover:scale-[1.02] transition-all">
+            <span class="material-icons-outlined text-dark">check_circle</span>
             Create Quotation
         </button>
-        <a href="{% url 'quotations:list' %}" class="flex-1 sm:flex-none px-8 py-4 bg-dark-surface text-cream/60 rounded-lg font-medium hover:bg-dark-border transition-m3 text-center">
+        <a href="{% url 'quotations:list' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center px-8 py-4 bg-dark-surface border border-dark-border text-cream/70 rounded-xl font-medium hover:bg-dark-border hover:text-cream transition-m3">
             Cancel
         </a>
     </div>

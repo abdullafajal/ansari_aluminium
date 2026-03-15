@@ -3,7 +3,7 @@
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">
-    <img src="{% static 'assets/icons/logo-navy-red.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
+    <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
     Ansari Aluminium Administration
 </a></h1>
 {% endblock %}
@@ -12,34 +12,35 @@
 {{ block.super }}
 <style>
     :root {
-        /* Primary - Navy Blue */
-        --primary: #0F2C59;
-        --secondary: #DE1B1B;
+        /* Primary - Charcoal */
+        --primary: #0F0F1A;
+        /* Secondary - Gold */
+        --secondary: #D4A853;
     }
     
     body {
-        background-color: #F6F8FB;
+        background-color: #1A1A2E; /* Dark background */
     }
     
     #header {
         background: var(--primary);
-        color: #fff;
+        color: #F5F0E8;
     }
     
     .submit-row input[type=submit] {
-        background: var(--primary);
-        color: #fff;
+        background: var(--secondary);
+        color: #0F0F1A;
         text-transform: uppercase;
         font-weight: bold;
         transition: background-color 0.3s;
     }
     
     .submit-row input[type=submit]:hover {
-        background: #0A1E3D;
+        background: #E0BC72;
     }
     
     #branding h1 a {
-        color: #fff;
+        color: #F5F0E8;
     }
 </style>
 {% endblock %}

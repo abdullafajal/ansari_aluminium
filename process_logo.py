@@ -8,9 +8,9 @@ def process_logo(input_path, output_dir):
     
     new_data = []
     
-    # Target Colors
-    navy_blue = (15, 44, 89)    # #0F2C59
-    bright_red = (222, 27, 27)  # #DE1B1B
+    # Target Colors for Dark Premium Theme
+    cream = (245, 240, 232)     # #F5F0E8
+    gold = (212, 168, 83)       # #D4A853
     
     for item in datas:
         r, g, b, a = item
@@ -20,27 +20,28 @@ def process_logo(input_path, output_dir):
         # Darker pixels = More Opaque. Lighter pixels = More Transparent.
         brightness = (r + g + b) / 3
         
-        if brightness > 250:
-            # Almost pure white -> transparent
+        if brightness > 230:
+            # High threshold to remove all off-white artifacts from AI generation
+            # so they don't mess up the bounding box centering.
             new_data.append((255, 255, 255, 0))
             continue
             
         # Calculate soft alpha for edges
-        # Map brightness 250..0 to alpha 0..255
-        alpha = int((250 - brightness) / 250 * 255)
+        # Map brightness 230..0 to alpha 0..255
+        alpha = int((230 - brightness) / 230 * 255)
         # Boost alpha slightly to make it solid faster
         alpha = min(255, int(alpha * 1.5))
         
         # 2. Determine Color
         
-        # "Red-ish" check
-        # Red is dominant and significantly brighter than Green/Blue
-        if r > g + 30 and r > b + 30:
-             # It's Red -> Change to Bright Red
-             new_data.append(bright_red + (alpha,))
+        # "Gold/Yellowish" check
+        # Gold has high Red and Green, low Blue
+        if r > b + 30 and g > b + 30:
+             # It's Gold -> Change to exact theme Gold
+             new_data.append(gold + (alpha,))
         else:
-             # It's not Red (Blue, Black, Gray) -> Change to Navy Blue
-             new_data.append(navy_blue + (alpha,))
+             # It's Light (Cream/Gray) -> Change to exact theme Cream
+             new_data.append(cream + (alpha,))
 
     img.putdata(new_data)
     
@@ -54,10 +55,9 @@ def process_logo(input_path, output_dir):
     aspect = img.width / img.height
     web_h = 240 # @3x (was 160)
     web_w = int(web_h * aspect)
-    
     web_logo = img.resize((web_w, web_h), Image.Resampling.LANCZOS)
-    web_logo.save(f"{output_dir}/logo-navy-red.png")
-    print("Saved logo-navy-red.png")
+    web_logo.save(f"{output_dir}/logo-cream-gold.png")
+    print("Saved logo-cream-gold.png")
     
     # Resize and save icons for PWA
     # For PWA, we want White Logo on Brand Navy Background with Rounded Corners
@@ -92,7 +92,7 @@ def process_logo(input_path, output_dir):
         radius = int(size * 0.22)
         
         # Draw navy rounded rect
-        draw.rounded_rectangle([(0, 0), (size, size)], radius=radius, fill=navy_blue)
+        draw.rounded_rectangle([(0, 0), (size, size)], radius=radius, fill=(15, 15, 26)) # Hardcode Charcoal for background
         
         # Resize white logo to fit with padding
         padding = int(size * 0.25) 
@@ -121,6 +121,6 @@ def process_logo(input_path, output_dir):
             print(f"Error saving {name}: {e}")
 
 process_logo(
-    '/Users/aqib/.gemini/antigravity/brain/92dc8e28-2545-4bb9-869c-dcf4c89deecb/uploaded_media_1770735552578.jpg', 
+    '/Users/aqib/.gemini/antigravity/brain/d6685e69-d6fa-42af-be55-b1b0e734538e/ansari_aluminium_logo_cream_gold_1773567139847.png', 
     '/Users/aqib/work/ansari_aluminium/static/assets/icons'
 )

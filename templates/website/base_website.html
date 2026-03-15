@@ -363,31 +363,36 @@
     </footer>
 
     <!-- Bottom Mobile Navigation (Floating Pill) -->
-    <nav class="md:hidden fixed bottom-6 left-6 right-6 bg-[#0F0F1A] rounded-full shadow-2xl z-50 px-6 py-3 border border-primary/30" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
+    <nav id="mobile-nav" class="md:hidden fixed bottom-6 left-4 right-4 bg-[#0F0F1A] rounded-full shadow-2xl z-50 px-6 py-3 border border-primary/30 transition-transform duration-300" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
         <div class="flex items-center justify-between w-full">
             <!-- Home -->
-            <a href="{% url 'website:home' %}" class="flex flex-col items-center p-2 {% if request.resolver_match.url_name == 'home' %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                <span class="material-icons-outlined">home</span>
+            <a href="{% url 'website:home' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if request.resolver_match.url_name == 'home' %}text-primary{% else %}text-cream/40{% endif %}">
+                <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if request.resolver_match.url_name == 'home' %}bg-primary/20{% endif %}">home</span>
+                <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Home</span>
             </a>
             
             <!-- Products -->
-            <a href="{% url 'website:products' %}" class="flex flex-col items-center p-2 {% if 'products' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                <span class="material-icons-outlined">category</span>
+            <a href="{% url 'website:products' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'products' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'products' in request.resolver_match.url_name %}bg-primary/20{% endif %}">category</span>
+                <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Products</span>
             </a>
             
             <!-- Contact / Quote (Center) -->
-            <a href="{% url 'website:contact' %}" class="flex flex-col items-center p-2 {% if 'contact' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                <span class="material-icons-outlined">chat</span>
+            <a href="{% url 'website:contact' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'contact' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'contact' in request.resolver_match.url_name %}bg-primary/20{% endif %}">chat</span>
+                <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Quote</span>
             </a>
 
             <!-- Portfolio -->
-            <a href="{% url 'website:portfolio' %}" class="flex flex-col items-center p-2 {% if 'portfolio' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                <span class="material-icons-outlined">collections</span>
+            <a href="{% url 'website:portfolio' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'portfolio' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'portfolio' in request.resolver_match.url_name %}bg-primary/20{% endif %}">collections</span>
+                <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Portfolio</span>
             </a>
 
             <!-- About -->
-            <a href="{% url 'website:about' %}" class="flex flex-col items-center p-2 {% if 'about' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                <span class="material-icons-outlined">info</span>
+            <a href="{% url 'website:about' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'about' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'about' in request.resolver_match.url_name %}bg-primary/20{% endif %}">info</span>
+                <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">About</span>
             </a>
         </div>
     </nav>
@@ -395,9 +400,55 @@
     <!-- Add padding to bottom of footer to account for mobile nav -->
     <style>
         @media (max-width: 768px) {
-            footer { padding-bottom: 90px !important; }
+            footer { padding-bottom: 80px !important; }
         }
     </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollTop = 0;
+        const mobileNav = document.getElementById('mobile-nav');
+        const mobileHeader = document.getElementById('mobile-app-header');
+        const mainHeader = document.getElementById('main-header');
+        
+        const HIDE_THRESHOLD = 40; // Pixels to scroll down before hiding
+        const SHOW_THRESHOLD = 5;  // Pixels to scroll up before showing
+        let scrollAccumulator = 0;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            let diff = scrollTop - lastScrollTop;
+            
+            if (scrollTop <= 10) {
+                // At the very top, always show
+                mobileNav.classList.remove('translate-y-[150%]');
+                mobileHeader.classList.remove('-translate-y-full');
+                mainHeader.classList.remove('-translate-y-full');
+                scrollAccumulator = 0;
+            } else if (diff > 0) {
+                // Scrolling Down
+                if (scrollAccumulator < 0) scrollAccumulator = 0;
+                scrollAccumulator += diff;
+                if (scrollAccumulator > HIDE_THRESHOLD) {
+                    mobileNav.classList.add('translate-y-[150%]');
+                    mobileHeader.classList.add('-translate-y-full');
+                    mainHeader.classList.add('-translate-y-full');
+                }
+            } else if (diff < 0) {
+                // Scrolling Up
+                if (scrollAccumulator > 0) scrollAccumulator = 0;
+                scrollAccumulator += diff; // diff is negative
+                if (Math.abs(scrollAccumulator) > SHOW_THRESHOLD) {
+                    mobileNav.classList.remove('translate-y-[150%]');
+                    mobileHeader.classList.remove('-translate-y-full');
+                    mainHeader.classList.remove('-translate-y-full');
+                }
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+    });
+</script>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>

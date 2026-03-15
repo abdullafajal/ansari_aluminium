@@ -77,7 +77,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-h-screen overflow-x-hidden max-w-full">
         <!-- Top Bar (Mobile) -->
-        <header class="lg:hidden sticky top-0 z-40 bg-dark-card/95 backdrop-blur border-b border-primary/30 px-4 py-3">
+        <header id="top-header-dashboard" class="lg:hidden sticky top-0 z-40 bg-dark-card/95 backdrop-blur border-b border-primary/30 px-4 py-3 transition-transform duration-300">
             <div class="flex items-center justify-between">
                 <a href="{% url 'dashboard:index' %}" class="flex items-center gap-2">
                     <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-5 w-auto">
@@ -271,36 +271,78 @@
         </main>
         
         <!-- Bottom Navigation (Mobile - Floating Pill) -->
-        <nav class="lg:hidden fixed bottom-6 left-6 right-6 bg-[#0F0F1A] rounded-full shadow-2xl z-40 px-6 py-3 border border-primary/30" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
+        <nav id="mobile-nav-dashboard" class="lg:hidden fixed bottom-6 left-4 right-4 bg-[#0F0F1A] rounded-full shadow-2xl z-40 px-6 py-3 border border-primary/30 transition-transform duration-300" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
             <div class="flex items-center justify-between w-full">
                 <!-- Home -->
-                <a href="{% url 'dashboard:index' %}" class="flex flex-col items-center p-2 {% if 'dashboard' in request.path and 'enquiries' not in request.path %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                    <span class="material-icons-outlined">home</span>
+                <a href="{% url 'dashboard:index' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'dashboard' in request.path and 'enquiries' not in request.path %}text-primary{% else %}text-cream/40{% endif %}">
+                    <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'dashboard' in request.path and 'enquiries' not in request.path %}bg-primary/20{% endif %}">home</span>
+                    <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Home</span>
                 </a>
                 
                 <!-- Orders -->
-                <a href="{% url 'orders:list' %}" class="flex flex-col items-center p-2 {% if 'order' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                    <span class="material-icons-outlined">show_chart</span>
+                <a href="{% url 'orders:list' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'order' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                    <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'order' in request.resolver_match.url_name %}bg-primary/20{% endif %}">show_chart</span>
+                    <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Orders</span>
                 </a>
                 
                 <!-- Center Add Button -->
                 {% if user.is_admin %}
-                <a href="{% url 'quotations:create' %}" class="flex flex-col items-center p-2 {% if 'create' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                    <span class="material-icons-outlined">add_circle_outline</span>
+                <a href="{% url 'quotations:create' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'create' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                    <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'create' in request.resolver_match.url_name %}bg-primary/20{% endif %}">add_circle_outline</span>
+                    <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Create</span>
                 </a>
                 {% endif %}
                 
                 <!-- Invoices -->
-                <a href="{% url 'billing:list' %}" class="flex flex-col items-center p-2 {% if 'billing' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                    <span class="material-icons-outlined">payments</span>
+                <a href="{% url 'billing:list' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'billing' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                    <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'billing' in request.resolver_match.url_name %}bg-primary/20{% endif %}">payments</span>
+                    <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Bills</span>
                 </a>
                 
                 <!-- Quotation List -->
-                <a href="{% url 'quotations:list' %}" class="flex flex-col items-center p-2 {% if 'quotation' in request.resolver_match.url_name %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">
-                    <span class="material-icons-outlined">request_quote</span>
+                <a href="{% url 'quotations:list' %}" class="flex flex-col items-center flex-1 transition-all duration-300 {% if 'quotation' in request.resolver_match.url_name %}text-primary{% else %}text-cream/40{% endif %}">
+                    <span class="material-icons-outlined text-[18px] w-8 h-8 inline-flex items-center justify-center rounded-full {% if 'quotation' in request.resolver_match.url_name %}bg-primary/20{% endif %}">request_quote</span>
+                    <span class="text-[9px] font-medium leading-none mt-0.5 uppercase tracking-tighter">Quotes</span>
                 </a>
             </div>
         </nav>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollTop = 0;
+        const mobileNav = document.getElementById('mobile-nav-dashboard');
+        const topHeader = document.getElementById('top-header-dashboard');
+        
+        const HIDE_THRESHOLD = 40; // Pixels down to hide
+        const SHOW_THRESHOLD = 5;  // Pixels up to show
+        let scrollAccumulator = 0;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            let diff = scrollTop - lastScrollTop;
+            
+            if (scrollTop <= 10) {
+                mobileNav.classList.remove('translate-y-[150%]');
+                topHeader.classList.remove('-translate-y-full');
+                scrollAccumulator = 0;
+            } else if (diff > 0) {
+                if (scrollAccumulator < 0) scrollAccumulator = 0;
+                scrollAccumulator += diff;
+                if (scrollAccumulator > HIDE_THRESHOLD) {
+                    mobileNav.classList.add('translate-y-[150%]');
+                    topHeader.classList.add('-translate-y-full');
+                }
+            } else if (diff < 0) {
+                if (scrollAccumulator > 0) scrollAccumulator = 0;
+                scrollAccumulator += diff;
+                if (Math.abs(scrollAccumulator) > SHOW_THRESHOLD) {
+                    mobileNav.classList.remove('translate-y-[150%]');
+                    topHeader.classList.remove('-translate-y-full');
+                }
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+    });
+</script>
 {% endblock body %}

@@ -1,0 +1,80 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-cream">Orders</h1>
+        <p class="text-cream/50 mt-1">Track and manage all orders</p>
+    </div>
+</div>
+
+<!-- Status Filter -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+    <a href="{% url 'orders:list' %}" class="shrink-0 px-4 py-2 rounded-full font-medium transition-m3 {% if not current_status %}bg-primary text-white{% else %}bg-dark-surface text-cream/60 hover:bg-dark-elevated{% endif %}">
+        All
+    </a>
+    {% for value, label in status_choices %}
+    <a href="?status={{ value }}" class="shrink-0 px-4 py-2 rounded-full font-medium transition-m3 {% if current_status == value %}bg-primary text-white{% else %}bg-dark-surface text-cream/60 hover:bg-dark-elevated{% endif %}">
+        {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
+<!-- Order List -->
+{% if orders %}
+<div class="bg-dark-card rounded-lg overflow-hidden">
+    {% for order in orders %}
+    <a href="{% url 'orders:detail' pk=order.pk %}" class="flex items-center gap-4 p-4 hover:bg-dark-surface transition-m3 {% if not forloop.last %}border-b border-dark-border{% endif %}">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center shrink-0
+            {% if order.status == 'draft' %}bg-dark-surface
+            {% elif order.status == 'approved' %}bg-blue-500/10
+            {% elif order.status == 'measuring' or order.status == 'fabrication' %}bg-amber-500/10
+            {% elif order.status == 'ready' or order.status == 'installation' %}bg-purple-500/10
+            {% elif order.status == 'completed' %}bg-green-500/10
+            {% elif order.status == 'closed' %}bg-red-500/10
+            {% else %}bg-dark-surface{% endif %}">
+            <span class="material-icons-outlined 
+                {% if order.status == 'draft' %}text-cream/50
+                {% elif order.status == 'approved' %}text-blue-400
+                {% elif order.status == 'measuring' or order.status == 'fabrication' %}text-amber-400
+                {% elif order.status == 'ready' or order.status == 'installation' %}text-purple-400
+                {% elif order.status == 'completed' %}text-green-400
+                {% elif order.status == 'closed' %}text-red-400
+                {% else %}text-cream/40{% endif %}">inventory_2</span>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="font-medium text-cream">{{ order.order_number }}</div>
+            <div class="text-sm text-cream/40 truncate">{{ order.customer }} • {{ order.created_at|date:"d M Y" }}</div>
+        </div>
+        <div class="text-right">
+            <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full 
+                {% if order.status == 'draft' %}bg-dark-surface text-cream/60
+                {% elif order.status == 'approved' %}bg-blue-500/10 text-blue-400
+                {% elif order.status == 'measuring' or order.status == 'fabrication' %}bg-amber-500/10 text-amber-400
+                {% elif order.status == 'ready' or order.status == 'installation' %}bg-purple-500/10 text-purple-400
+                {% elif order.status == 'completed' %}bg-green-500/10 text-green-400
+                {% elif order.status == 'closed' %}bg-red-500/10 text-red-400
+                {% else %}bg-dark-surface text-cream/50{% endif %}">
+                {{ order.get_status_display }}
+            </span>
+            {% if order.priority == 'urgent' %}
+            <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-red-500/10 text-red-400 ml-1">Urgent</span>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-dark-card rounded-lg p-12 text-center">
+    <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-icons-outlined text-primary text-3xl">inventory_2</span>
+    </div>
+    <h3 class="text-lg font-semibold text-cream mb-2">No orders yet</h3>
+    <p class="text-cream/50 mb-6">Orders will appear here once quotations are converted</p>
+    <a href="{% url 'quotations:list' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-m3">
+        <span class="material-icons-outlined">request_quote</span>
+        View Quotations
+    </a>
+</div>
+{% endif %}
+{% endblock %}

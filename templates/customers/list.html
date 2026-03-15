@@ -1,0 +1,72 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-cream">Customers</h1>
+        <p class="text-cream/50 mt-1">Manage your customer database</p>
+    </div>
+    <a href="{% url 'customers:create' %}" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-m3 shadow-elevation-1">
+        <span class="material-icons-outlined">person_add</span>
+        Add Customer
+    </a>
+</div>
+
+<!-- Search -->
+<div class="mb-6">
+    <form method="get" class="flex gap-3">
+        <div class="flex-1 relative">
+            <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-cream/30">search</span>
+            <input type="text" name="search" value="{{ search }}" placeholder="Search customers..." 
+                class="w-full pl-12 pr-4 py-3 rounded-xl border border-dark-border bg-dark focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-m3">
+        </div>
+        <button type="submit" class="px-6 py-3 bg-dark-surface rounded-xl font-medium hover:bg-dark-elevated transition-m3">
+            Search
+        </button>
+    </form>
+</div>
+
+<!-- Customer List -->
+{% if customers %}
+<div class="bg-dark-card rounded-lg overflow-hidden">
+    {% for customer in customers %}
+    <a href="{% url 'customers:detail' pk=customer.pk %}" class="flex items-center gap-4 p-4 hover:bg-dark-surface transition-m3 {% if not forloop.last %}border-b border-dark-border{% endif %}">
+        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+            <span class="material-icons-outlined text-primary">person</span>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="font-medium text-cream truncate">{{ customer.contact_person }}{% if customer.company_name %} <span class="text-cream/40 font-normal">({{ customer.company_name }})</span>{% endif %}</div>
+            <div class="text-sm text-cream/40 truncate">{{ customer.phone }} • {{ customer.city }}</div>
+        </div>
+        <span class="material-icons-outlined text-cream/30">chevron_right</span>
+    </a>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if customers.has_other_pages %}
+<div class="flex justify-center gap-2 mt-6">
+    {% if customers.has_previous %}
+    <a href="?page={{ customers.previous_page_number }}&search={{ search }}" class="px-4 py-2 bg-dark-surface rounded-xl hover:bg-dark-elevated transition-m3">Previous</a>
+    {% endif %}
+    <span class="px-4 py-2 text-cream/50">Page {{ customers.number }} of {{ customers.paginator.num_pages }}</span>
+    {% if customers.has_next %}
+    <a href="?page={{ customers.next_page_number }}&search={{ search }}" class="px-4 py-2 bg-dark-surface rounded-xl hover:bg-dark-elevated transition-m3">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="bg-dark-card rounded-lg p-12 text-center">
+    <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-icons-outlined text-primary text-3xl">people</span>
+    </div>
+    <h3 class="text-lg font-semibold text-cream mb-2">No customers yet</h3>
+    <p class="text-cream/50 mb-6">Start by adding your first customer</p>
+    <a href="{% url 'customers:create' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-m3">
+        <span class="material-icons-outlined">person_add</span>
+        Add Customer
+    </a>
+</div>
+{% endif %}
+{% endblock %}

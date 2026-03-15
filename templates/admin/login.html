@@ -1,0 +1,45 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">
+    <img src="{% static 'assets/icons/logo-navy-red.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
+    Ansari Aluminium Administration
+</a></h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    :root {
+        /* Primary - Navy Blue */
+        --primary: #0F2C59;
+        --secondary: #DE1B1B;
+    }
+    
+    body {
+        background-color: #F6F8FB;
+    }
+    
+    #header {
+        background: var(--primary);
+        color: #fff;
+    }
+    
+    .submit-row input[type=submit] {
+        background: var(--primary);
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .submit-row input[type=submit]:hover {
+        background: #0A1E3D;
+    }
+    
+    #branding h1 a {
+        color: #fff;
+    }
+</style>
+{% endblock %}

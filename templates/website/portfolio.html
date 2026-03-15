@@ -1,0 +1,101 @@
+{% extends "website/base_website.html" %}
+
+{% block title %}Our Work - {{ SITE_NAME }} Portfolio{% endblock %}
+
+{% block meta_description %}Explore our portfolio of completed UPVC windows, aluminium doors, and glass partition projects across Noida and NCR.{% endblock %}
+
+{% block meta_keywords %}UPVC Projects, Aluminium Fabrication Portfolio, Glass Partition Designs, Window Installations{% endblock %}
+
+{% block content %}
+<section class="bg-dark min-h-screen py-12 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-16">
+            <span class="inline-block py-1 px-3 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-4">Our Work</span>
+            <h1 class="text-3xl md:text-5xl font-bold text-cream mb-6">Recent Projects</h1>
+            <p class="text-cream/40 max-w-2xl mx-auto text-lg">
+                Discover how we've transformed homes and offices across the city with premium fabrication.
+            </p>
+        </div>
+
+    <!-- Filter Tabs -->
+        <div class="flex justify-center flex-wrap gap-2 mb-12">
+            <button class="filter-btn active px-6 py-2.5 bg-primary text-dark rounded-lg font-medium shadow-gold-sm transition-all hover:-translate-y-0.5" data-filter="all">All</button>
+            {% for category in categories %}
+            <button class="filter-btn px-6 py-2.5 bg-dark-card text-cream/60 rounded-lg font-medium border border-dark-border hover:border-primary/30 transition-colors" data-filter="{{ category }}">{{ category }}</button>
+            {% endfor %}
+        </div>
+
+        <!-- Masonry Grid -->
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6" id="portfolio-grid">
+            
+            {% for project in projects %}
+            <div class="portfolio-item break-inside-avoid rounded-lg overflow-hidden group relative bg-dark-card border border-dark-border aspect-[{{ project.id|divisibleby:2|yesno:'3/4,4/3' }}]" data-category="{{ project.category }}" data-aos="fade-up">
+                {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                {% else %}
+                <div class="absolute inset-0 bg-dark-surface flex items-center justify-center text-cream/10">
+                    <span class="material-icons-outlined text-6xl">image</span>
+                </div>
+                {% endif %}
+                
+                <!-- Overlay -->
+                <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end bg-gradient-to-t from-dark/90 via-transparent to-transparent">
+                    <span class="text-sm font-medium text-primary mb-1">{{ project.category }}</span>
+                    <h3 class="text-xl font-bold text-cream leading-tight">{{ project.title }}</h3>
+                    <p class="text-sm text-cream/50 mt-2">{{ project.location }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-20 text-cream/40">
+                <p>No projects found yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+
+        </div>
+        
+        <div class="mt-20 text-center">
+            <h2 class="text-2xl font-bold text-cream mb-6">Want to see more?</h2>
+            <a href="{% url 'website:contact' %}" class="inline-flex items-center gap-2 px-8 py-3 bg-dark-card border border-dark-border rounded-lg font-bold hover:border-primary/30 transition-colors text-cream">
+                Contact Us for Portfolio
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-dark', 'shadow-gold-sm');
+                    b.classList.add('bg-dark-card', 'text-cream/60', 'border', 'border-dark-border');
+                });
+                
+                btn.classList.remove('bg-dark-card', 'text-cream/60', 'border-dark-border');
+                btn.classList.add('bg-primary', 'text-dark', 'shadow-gold-sm');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                portfolioItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                        item.animate([
+                            { opacity: 0, transform: 'scale(0.95)' },
+                            { opacity: 1, transform: 'scale(1)' }
+                        ], {
+                            duration: 300,
+                            easing: 'ease-out'
+                        });
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

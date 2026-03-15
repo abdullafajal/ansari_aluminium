@@ -1,0 +1,72 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">
+    <img src="{% static 'assets/icons/logo-navy-red.png' %}" alt="Ansari Aluminium" height="24" style="height: 24px; vertical-align: middle; margin-right: 10px;">
+    Ansari Aluminium Administration
+</a></h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    :root {
+        /* Primary - Navy Blue */
+        --primary: #0F2C59;
+        --primary-fg: #fff;
+        
+        /* Secondary - Red */
+        --secondary: #DE1B1B;
+        --accent: #DE1B1B;
+        
+        /* Header */
+        --header-bg: var(--primary);
+        --header-color: var(--primary-fg);
+        --header-link-color: var(--primary-fg);
+        
+        /* Links */
+        --link-fg: var(--primary);
+        --link-hover-color: var(--secondary);
+        --link-selected-fg: var(--secondary);
+        
+        /* Buttons */
+        --button-bg: var(--primary);
+        --button-fg: var(--primary-fg);
+        --button-hover-bg: #0A1E3D; /* Darker Navy */
+        --default-button-bg: var(--secondary);
+        --default-button-hover-bg: #B51515; /* Darker Red */
+        
+        /* Modules */
+        --module-bg: #fff;
+        --module-hover-bg: #F6F8FB; /* Light Gray from theme */
+        
+        /* Sidebar */
+        --sidebar-bg: #f8f9fa;
+        --sidebar-link-fg: #333;
+        --sidebar-link-selected-bg: #fff;
+    }
+    
+    /* Login Page Specifics */
+    body.login {
+        background: #F6F8FB;
+    }
+    
+    body.login #header {
+        background: var(--primary);
+    }
+    
+    .login .submit-row input {
+        background: var(--primary);
+    }
+    
+    .login .submit-row input:hover {
+        background: var(--button-hover-bg);
+    }
+    
+    /* Logo styling in header */
+    #site-name img {
+        filter: brightness(0) invert(1); /* Make logo white for dark header */
+    }
+</style>
+{% endblock %}

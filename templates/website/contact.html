@@ -1,0 +1,170 @@
+{% extends "website/base_website.html" %}
+
+{% block title %}Contact Us - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-dark py-12 md:py-20 relative overflow-hidden">
+    <!-- Decorative background -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+        
+        <div class="text-center mb-16 animate-fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-4">Get in Touch</span>
+            <h1 class="text-4xl md:text-6xl font-bold text-cream mb-6 tracking-tight">Let's build something <span class="text-gold-gradient">great</span></h1>
+            <p class="text-cream/40 max-w-2xl mx-auto text-lg leading-relaxed">
+                Whether you have a question about our premium finishes, need a custom quotation, or want to schedule a site visit, our team is ready.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            <!-- Contact Info (Left) -->
+            <div class="lg:col-span-4 space-y-4 lg:sticky lg:top-32">
+                <div class="card-dark p-6 rounded-lg" data-aos="fade-right" data-aos-delay="100">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary shrink-0">
+                            <span class="material-icons-outlined">call</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-cream text-lg mb-1">Call Us</h3>
+                            <p class="text-cream/40 text-sm mb-2">Mon-Sat from 9am to 7pm</p>
+                            <a href="tel:{{ global_preferences.contact__phone }}" class="text-cream font-bold hover:text-primary transition-colors text-lg">{{ global_preferences.contact__phone }}</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-dark p-6 rounded-lg" data-aos="fade-right" data-aos-delay="200">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary shrink-0">
+                            <span class="material-icons-outlined">mail</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-cream text-lg mb-1">Email Us</h3>
+                            <p class="text-cream/40 text-sm mb-2">Online support 24/7</p>
+                            <a href="mailto:{{ global_preferences.contact__email }}" class="text-cream font-bold hover:text-primary transition-colors">{{ global_preferences.contact__email }}</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-dark p-6 rounded-lg" data-aos="fade-right" data-aos-delay="300">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary shrink-0">
+                            <span class="material-icons-outlined">location_on</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-cream text-lg mb-1">Visit Us</h3>
+                            <p class="text-cream/40 text-sm mb-3">{{ global_preferences.contact__address|linebreaksbr }}</p>
+                            <a href="{{ global_preferences.contact__map_link }}" target="_blank" class="inline-flex items-center text-sm font-bold text-primary hover:gap-1 transition-all">
+                                Get Directions <span class="material-icons-outlined text-base ml-1">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form (Right) -->
+            <div class="lg:col-span-8 card-dark p-8 md:p-12 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                <h2 class="text-2xl font-bold text-cream mb-8">Send us a Message</h2>
+                <form method="POST" action="{% url 'website:contact' %}" class="space-y-6" id="contactForm">
+                    {% csrf_token %}
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-cream/40 uppercase tracking-wider mb-2 ml-1">Your Name</label>
+                            <input type="text" name="name" required 
+                                   class="w-full px-5 py-4 rounded-lg bg-dark-surface border border-dark-border focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none transition-all placeholder-cream/20 font-medium text-cream" 
+                                   placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-cream/40 uppercase tracking-wider mb-2 ml-1">Email Address</label>
+                            <input type="email" name="email" required 
+                                   class="w-full px-5 py-4 rounded-lg bg-dark-surface border border-dark-border focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none transition-all placeholder-cream/20 font-medium text-cream" 
+                                   placeholder="john@example.com">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-cream/40 uppercase tracking-wider mb-2 ml-1">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required 
+                               class="w-full px-5 py-4 rounded-lg bg-dark-surface border border-dark-border focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none transition-all placeholder-cream/20 font-medium text-cream" 
+                               placeholder="98765 43210">
+                        <span id="phone-error" class="text-red-400 text-xs mt-1 hidden ml-1">Invalid phone number</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-cream/40 uppercase tracking-wider mb-2 ml-1">Message</label>
+                        <textarea name="message" rows="5" required 
+                                  class="w-full px-5 py-4 rounded-lg bg-dark-surface border border-dark-border focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none transition-all placeholder-cream/20 font-medium text-cream resize-none" 
+                                  placeholder="Tell us about your requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 bg-primary text-dark rounded-lg font-bold text-lg hover:bg-primary-light shadow-gold-md hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2">
+                        <span>Send Enquiry</span>
+                        <span class="material-icons-outlined">send</span>
+                    </button>
+                    
+                    <p class="text-xs text-center text-cream/30 mt-4">
+                        Your privacy is important to us. We will never spam you.
+                    </p>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Intl Tel Input CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
+<style>
+    .iti { width: 100%; }
+    .iti__country-list { z-index: 50; border-radius: 8px; border: 1px solid #2A2A4A; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.4); overflow-x: hidden; background: #1A1A2E; color: #F5F0E8; }
+    .iti__country-list .iti__country.iti__highlight { background: #16213E; }
+    .iti__flag { background-image: url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/img/flags.png"); }
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .iti__flag { background-image: url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/img/flags@2x.png"); }
+    }
+    .iti__selected-dial-code { color: #F5F0E8; }
+    .iti__arrow { border-top-color: #F5F0E8; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const input = document.querySelector("#phone");
+        const errorMsg = document.querySelector("#phone-error");
+        
+        const iti = window.intlTelInput(input, {
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+            initialCountry: "in",
+            separateDialCode: true,
+            preferredCountries: ["in", "ae", "us", "uk"],
+        });
+        
+        input.addEventListener('blur', function() {
+            if (input.value.trim()) {
+                if (iti.isValidNumber()) {
+                    input.classList.remove("border-red-500");
+                    input.classList.add("border-green-500/50");
+                    errorMsg.classList.add("hidden");
+                } else {
+                    input.classList.add("border-red-500");
+                    input.classList.remove("border-green-500/50");
+                    errorMsg.classList.remove("hidden");
+                }
+            }
+        });
+
+        const form = document.querySelector("#contactForm");
+        form.addEventListener("submit", function(e) {
+            if (!iti.isValidNumber()) {
+                e.preventDefault();
+                input.focus();
+                errorMsg.classList.remove("hidden");
+                return false;
+            }
+            input.value = iti.getNumber();
+        });
+    });
+</script>
+{% endblock %}

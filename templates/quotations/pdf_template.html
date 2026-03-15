@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quotation {{ quotation.quote_number }}</title>
+    <!-- html2pdf.js for client-side PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts: Inter & Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #1f2937;
+            margin: 0;
+            padding: 20px;
+            background: #f3f4f6;
+            -webkit-font-smoothing: antialiased;
+        }
+        #quotation-content {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 20mm; /* Standard 2cm margin */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 2px; /* Sharper corners for paper look */
+        }
+        
+        /* Floating Download Bar */
+        .download-bar {
+            background: #ffffff;
+            padding: 10px 24px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.05);
+            width: fit-content;
+            max-width: 95%;
+            flex-wrap: wrap;
+        }
+        .download-bar span {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-btn {
+            background: #f8f9fa;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            background: #f3f4f6;
+            transform: translateY(-1px);
+        }
+        .action-btn.primary {
+            background: #0F2C59;
+            color: white;
+            border-color: #0F2C59;
+        }
+        .action-btn.primary:hover {
+            background: #5a429b;
+        }
+        .action-btn.whatsapp-direct {
+            background: #25D366;
+            color: white;
+            border-color: #25D366;
+        }
+        .action-btn.whatsapp-direct:hover {
+            background: #20bd5a;
+        }
+        .share-dropdown { position: relative; }
+        .share-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            min-width: 200px;
+            z-index: 1001;
+            padding: 4px;
+        }
+        .share-menu.show { display: block; }
+        .share-menu button, .share-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: #374151;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        .share-menu button:hover, .share-menu a:hover { background: #f3f4f6; }
+        .share-menu .whatsapp { color: #25D366; }
+        
+        /* Document Design */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 16px;
+        }
+        .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F2C59;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .brand-details p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 11px;
+        }
+        .doc-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 10px 0;
+            text-align: right;
+            letter-spacing: -0.5px;
+        }
+        .meta-table {
+            width: auto;
+            border-collapse: collapse;
+            margin-left: auto; /* Align table to the right */
+        }
+        .meta-table td {
+            padding: 2px 0 2px 12px;
+            border: none;
+            background: transparent;
+        }
+        .meta-label {
+            color: #6b7280;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: right;
+            padding-right: 8px !important;
+        }
+        .meta-value {
+            color: #111827;
+            font-weight: 600;
+            text-align: left;
+            font-size: 11px;
+        }
+        
+        /* Addresses */
+        .address-section {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        .addr-col {
+            flex: 1;
+        }
+        .addr-col h3 {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 4px;
+        }
+        .recipient-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+        .addr-col p {
+            margin: 0;
+            color: #374151;
+            font-size: 11px;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid #e5e7eb;
+            border-top: 1px solid #e5e7eb;
+        }
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 11px;
+            color: #111827;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        tr:last-child td {
+            border-bottom: 2px solid #f3f4f6;
+        }
+        th:first-child, td:first-child { padding-left: 0; }
+        th:last-child, td:last-child { padding-right: 0; text-align: right; }
+        
+        /* Footer/Totals */
+        .footer-split {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .terms-col {
+            flex: 1.5;
+            padding-right: 20px;
+        }
+        .totals-col {
+            flex: 1;
+        }
+        .terms-box h3 {
+            font-size: 10px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: #374151;
+        }
+        .terms-box p {
+            font-size: 9px;
+            color: #6b7280;
+            margin: 0;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+        
+        .totals-table td {
+            padding: 4px 0;
+            border: none;
+        }
+        .totals-table .label {
+            color: #6b7280;
+        }
+        .totals-table .value {
+            text-align: right;
+            font-weight: 500;
+            color: #111827;
+        }
+        .totals-table .grand-total td {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0F2C59;
+        }
+        
+        .thank-you-note {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0F2C59;
+            letter-spacing: 0.5px;
+        }
+        
+        .page-footer {
+            margin-top: 40px;
+            font-size: 9px;
+            color: #9ca3af;
+            text-align: center;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 10px;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        /* ... rules ... */
+
+        @media print {
+            .download-bar, .top-spacer { display: none; }
+            #quotation-content { 
+                box-shadow: none; 
+                margin: 0; 
+                width: 100%; 
+                min-height: auto; 
+                border-radius: 0;
+                /* Keep padding: 20mm from main CSS rule */
+            }
+            body { padding: 0; background: white; }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-bar">
+        <span><span class="material-icons-outlined">description</span> Quotation Preview</span>
+        
+        <!-- Download Button -->
+        {% if is_public %}
+        <a href="{% url 'quotations:public_pdf' quotation.share_id %}" class="action-btn primary" style="text-decoration:none;" title="Download PDF"><span class="material-icons-outlined" style="font-size:18px;">download</span> Download PDF</a>
+        {% else %}
+        <a href="{% url 'quotations:pdf_download' quotation.pk %}" class="action-btn primary" style="text-decoration:none;" title="Download PDF"><span class="material-icons-outlined" style="font-size:18px;">download</span> Download PDF</a>
+        {% endif %}
+
+        <!-- Print Button -->
+        <button onclick="window.print()" class="action-btn" title="Print"><span class="material-icons-outlined" style="font-size:18px;">print</span> Print</button>
+        
+        <!-- WhatsApp Button -->
+        <button onclick="shareWhatsApp(true)" class="action-btn whatsapp-direct" title="Share via WhatsApp"><span class="material-icons-outlined" style="font-size:18px;">chat</span> WhatsApp</button>
+        
+        <!-- Share Dropdown -->
+        <div class="share-dropdown">
+            <button onclick="toggleShareMenu()" class="action-btn" title="Share Options"><span class="material-icons-outlined" style="font-size:18px;">share</span> Share</button>
+            <div id="share-menu" class="share-menu">
+                <button onclick="shareWhatsApp(false)"><span class="material-icons-outlined whatsapp">chat</span> WhatsApp (Share)</button>
+                <button onclick="shareEmail()"><span class="material-icons-outlined email">email</span> Email</button>
+                <button onclick="copyLink()"><span class="material-icons-outlined copy">link</span> Copy Link</button>
+                <button onclick="nativeShare()" id="native-share" style="display:none;"><span class="material-icons-outlined native">phone_iphone</span> More Options</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="top-spacer" style="margin-top: 60px;"></div>
+
+    <div id="quotation-content">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="brand-col">
+                <h1 class="brand-name">Ansari Aluminium</h1>
+                <div class="brand-details">
+                    <p>Premium UPVC & Aluminium Fabrication</p>
+                    <p>{{ global_preferences.contact__address|default:"Location" }}</p>
+                    <p>{{ global_preferences.contact__phone|default:"Phone" }} | {{ global_preferences.contact__email|default:"Email" }}</p>
+                </div>
+            </div>
+            <div class="doc-meta-col">
+                <h2 class="doc-title">QUOTATION</h2>
+                <table class="meta-table">
+                    <tr>
+                        <td class="meta-label">Reference #</td>
+                        <td class="meta-value">{{ quotation.quote_number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="meta-label">Date</td>
+                        <td class="meta-value">{{ quotation.created_at|date:"d M Y" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="meta-label">Valid Until</td>
+                        <td class="meta-value">{{ quotation.valid_until|date:"d M Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Addresses -->
+        <div class="address-section">
+            <div class="addr-col">
+                <h3>Bill To</h3>
+                <p class="recipient-name">{{ quotation.customer.company_name|default:quotation.customer.contact_person }}</p>
+                {% if quotation.customer.company_name %}<p>{{ quotation.customer.contact_person }}</p>{% endif %}
+                <p>{{ quotation.customer.address }}</p>
+                <p>{{ quotation.customer.city }}, {{ quotation.customer.state }} - {{ quotation.customer.pincode }}</p>
+                <p>Phone: {{ quotation.customer.phone }}</p>
+                {% if quotation.customer.gst_number %}<p>GST: {{ quotation.customer.gst_number }}</p>{% endif %}
+            </div>
+            <div class="addr-col">
+                <h3>Site Address</h3>
+                <p>{{ quotation.site_address|default:quotation.customer.address|linebreaksbr }}</p>
+            </div>
+        </div>
+
+        <!-- Items -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 45%">Description</th>
+                    <th style="width: 15%">Size</th>
+                    <th style="width: 10%">Qty</th>
+                    <th style="width: 12%">Rate</th>
+                    <th style="width: 13%">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{% if item.width and item.height %}{{ item.width }}' × {{ item.height }}'{% else %}-{% endif %}</td>
+                    <td>{{ item.quantity|floatformat:0 }}</td>
+                    <td>₹{{ item.rate|floatformat:0 }}</td>
+                    <td style="font-weight:500">₹{{ item.amount|floatformat:0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Footer Split -->
+        <div class="footer-split">
+            <div class="terms-col">
+                {% if quotation.terms or quotation.notes %}
+                <div class="terms-box">
+                    <h3>Terms & Conditions</h3>
+                    <p>{{ quotation.terms }}</p>
+                    {% if quotation.notes %}
+                    <p style="margin-top:8px;"><strong>Note:</strong> {{ quotation.notes }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="totals-col">
+                <table class="totals-table">
+                    <tr>
+                        <td class="label">Items Total + Added Costs</td>
+                        <td class="value">₹{{ quotation.subtotal|floatformat:0 }}</td>
+                    </tr>
+                    {% if quotation.material_cost > 0 %}
+                    <tr>
+                        <td class="label" style="font-size: 9px; padding-left: 10px;">• incl. Material Cost</td>
+                        <td class="value" style="font-size: 9px;">₹{{ quotation.material_cost|floatformat:0 }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if quotation.labour_cost > 0 %}
+                    <tr>
+                        <td class="label" style="font-size: 9px; padding-left: 10px;">• incl. Labour Cost</td>
+                        <td class="value" style="font-size: 9px;">₹{{ quotation.labour_cost|floatformat:0 }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if quotation.discount_amount > 0 %}
+                    <tr>
+                        <td class="label">Discount ({{ quotation.discount_percent }}%)</td>
+                        <td class="value" style="color:#ef4444">- ₹{{ quotation.discount_amount|floatformat:0 }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="label">GST ({{ quotation.gst_percent|floatformat:0 }}%)</td>
+                        <td class="value">₹{{ quotation.gst_amount|floatformat:0 }}</td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td>Total</td>
+                        <td>₹{{ quotation.total|floatformat:0 }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <p>Thank you for your business! | This is a computer-generated quotation.</p>
+        </div>
+    </div>
+
+    <script>
+        const QUOTE_NUMBER = '{{ quotation.quote_number }}';
+        const CUSTOMER_NAME = '{{ quotation.customer.contact_person }}';
+        const CUSTOMER_PHONE = '{{ quotation.customer.phone|default:"" }}'.replace(/[^0-9]/g, '');
+        const TOTAL_AMOUNT = '₹{{ quotation.total|floatformat:0 }}';
+        const PUBLIC_SHARE_URL = window.location.origin + '/quotations/share/{{ quotation.share_id }}/';
+        const PAGE_URL = PUBLIC_SHARE_URL;
+
+        function toggleShareMenu() {
+            const menu = document.getElementById('share-menu');
+            menu.classList.toggle('show');
+            if (navigator.share) {
+                document.getElementById('native-share').style.display = 'flex';
+            }
+        }
+        
+        document.addEventListener('click', function(e) {
+            const dropdown = document.querySelector('.share-dropdown');
+            if (!dropdown.contains(e.target)) {
+                document.getElementById('share-menu').classList.remove('show');
+            }
+        });
+        
+        function shareWhatsApp(direct = false) {
+            const message = `📄 *Quotation: ${QUOTE_NUMBER}*\n\nDear ${CUSTOMER_NAME},\n\nPlease find your quotation for Aluminium/UPVC work.\n\n💰 *Total: ${TOTAL_AMOUNT}*\n\n🔗 View Quotation: ${PAGE_URL}\n\nThank you for choosing Ansari Aluminium!`;
+            let phoneParam = '';
+            
+            if (direct) {
+                if (CUSTOMER_PHONE && CUSTOMER_PHONE.length >= 10) {
+                    let fullPhone = CUSTOMER_PHONE;
+                    if (!fullPhone.startsWith('91') && fullPhone.length === 10) {
+                        fullPhone = '91' + fullPhone;
+                    }
+                    phoneParam = fullPhone;
+                } else {
+                    alert('Customer phone number not available. Opening generic WhatsApp share.');
+                }
+            }
+            
+            const url = `https://wa.me/${phoneParam}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+            return false;
+        }
+        
+        function shareEmail() {
+            const subject = `Quotation ${QUOTE_NUMBER} from Ansari Aluminium`;
+            const body = `Dear ${CUSTOMER_NAME},\n\nPlease find your quotation for Aluminium/UPVC work.\n\nQuotation No: ${QUOTE_NUMBER}\nTotal Amount: ${TOTAL_AMOUNT}\n\nView Quotation: ${PAGE_URL}\n\nThank you for choosing Ansari Aluminium!\n\nBest regards,\nAnsari Aluminium Team`;
+            const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = url;
+            return false;
+        }
+        
+        function copyLink() {
+            navigator.clipboard.writeText(PAGE_URL).then(function() {
+                alert('Link copied to clipboard!');
+            });
+            document.getElementById('share-menu').classList.remove('show');
+        }
+        
+        function nativeShare() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `Quotation ${QUOTE_NUMBER}`,
+                    text: `Quotation from Ansari Aluminium - Total: ${TOTAL_AMOUNT}`,
+                    url: PAGE_URL
+                });
+            }
+        }
+    </script>
+</body>
+</html>

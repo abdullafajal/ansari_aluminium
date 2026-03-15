@@ -1,0 +1,70 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-cream">Quotations</h1>
+        <p class="text-cream/50 mt-1">Create and manage quotations</p>
+    </div>
+    {% if user.is_admin %}
+    <a href="{% url 'quotations:create' %}" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-m3 shadow-elevation-1">
+        <span class="material-icons-outlined">add</span>
+        New Quotation
+    </a>
+    {% endif %}
+</div>
+
+<!-- Status Filter -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+    <a href="{% url 'quotations:list' %}" class="shrink-0 px-4 py-2 rounded-full font-medium transition-m3 {% if not current_status %}bg-primary text-white{% else %}bg-dark-surface text-cream/60 hover:bg-dark-elevated{% endif %}">
+        All
+    </a>
+    {% for value, label in status_choices %}
+    <a href="?status={{ value }}" class="shrink-0 px-4 py-2 rounded-full font-medium transition-m3 {% if current_status == value %}bg-primary text-white{% else %}bg-dark-surface text-cream/60 hover:bg-dark-elevated{% endif %}">
+        {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
+<!-- Quotation List -->
+{% if quotations %}
+<div class="bg-dark-card rounded-lg overflow-hidden">
+    {% for quotation in quotations %}
+    <a href="{% url 'quotations:detail' pk=quotation.pk %}" class="flex items-center gap-4 p-4 hover:bg-dark-surface transition-m3 {% if not forloop.last %}border-b border-dark-border{% endif %}">
+        <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+            <span class="material-icons-outlined text-primary">request_quote</span>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="font-medium text-cream">{{ quotation.quote_number }}</div>
+            <div class="text-sm text-cream/40 truncate">{{ quotation.customer }} • {{ quotation.created_at|date:"d M Y" }}</div>
+        </div>
+        <div class="text-right">
+            <div class="font-semibold text-cream">₹{{ quotation.total|floatformat:0 }}</div>
+            <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full 
+                {% if quotation.status == 'draft' %}bg-dark-surface text-cream/60
+                {% elif quotation.status == 'sent' %}bg-blue-500/10 text-blue-400
+                {% elif quotation.status == 'accepted' %}bg-green-500/10 text-green-400
+                {% elif quotation.status == 'rejected' %}bg-red-500/10 text-red-400
+                {% else %}bg-purple-100 text-purple-700{% endif %}">
+                {{ quotation.get_status_display }}
+            </span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-dark-card rounded-lg p-12 text-center">
+    <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-icons-outlined text-primary text-3xl">request_quote</span>
+    </div>
+    <h3 class="text-lg font-semibold text-cream mb-2">No quotations yet</h3>
+    <p class="text-cream/50 mb-6">Create your first quotation to get started</p>
+    {% if user.is_admin %}
+    <a href="{% url 'quotations:create' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-m3">
+        <span class="material-icons-outlined">add</span>
+        New Quotation
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

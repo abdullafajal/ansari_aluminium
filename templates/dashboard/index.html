@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ SITE_NAME }}{% endblock %}
+
+{% block body %}
+<!-- Dashboard Layout -->
+<div class="min-h-screen bg-dark flex">
+    <!-- Sidebar (Desktop) -->
+    <aside class="hidden lg:flex flex-col w-72 sidebar-dark border-r border-dark-border">
+        <!-- Logo -->
+        <div class="p-5 border-b border-dark-border">
+            <a href="{% url 'dashboard:index' %}" class="flex items-center gap-3">
+                <span class="w-11 h-11 bg-primary rounded-lg flex items-center justify-center shadow-gold-sm">
+                    <span class="material-icons-outlined text-dark">home_repair_service</span>
+                </span>
+                <div>
+                    <span class="font-bold text-lg text-cream">{{ SITE_NAME }}</span>
+                    <p class="text-xs text-cream/40">Admin Dashboard</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="{% url 'dashboard:index' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if 'dashboard' in request.path and 'enquiries' not in request.path %}nav-active{% else %}text-cream/60 hover:bg-dark-elevated/50 hover:text-cream{% endif %} transition-m3 font-medium">
+                <span class="material-icons-outlined">dashboard</span>
+                Dashboard
+            </a>
+            <a href="{% url 'dashboard:enquiry_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if 'enquiries' in request.path %}nav-active{% else %}text-cream/60 hover:bg-dark-elevated/50 hover:text-cream{% endif %} transition-m3 font-medium">
+                <span class="material-icons-outlined">contact_mail</span>
+                Enquiries
+                {% if new_enquiries_count > 0 %}
+                <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ new_enquiries_count }}</span>
+                {% endif %}
+            </a>
+            {% if user.is_admin %}
+            <a href="{% url 'customers:list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-cream/60 hover:bg-dark-elevated/50 hover:text-cream transition-m3 font-medium">
+                <span class="material-icons-outlined">people</span>
+                Customers
+            </a>
+            {% endif %}
+            <a href="{% url 'quotations:list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-cream/60 hover:bg-dark-elevated/50 hover:text-cream transition-m3 font-medium">
+                <span class="material-icons-outlined">request_quote</span>
+                Quotations
+            </a>
+            <a href="{% url 'orders:list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-cream/60 hover:bg-dark-elevated/50 hover:text-cream transition-m3 font-medium">
+                <span class="material-icons-outlined">inventory_2</span>
+                Orders
+            </a>
+            <a href="{% url 'billing:list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-cream/60 hover:bg-dark-elevated/50 hover:text-cream transition-m3 font-medium">
+                <span class="material-icons-outlined">receipt_long</span>
+                Invoices
+            </a>
+            {% if user.is_admin %}
+            <a href="{% url 'products:list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-cream/60 hover:bg-dark-elevated/50 hover:text-cream transition-m3 font-medium">
+                <span class="material-icons-outlined">category</span>
+                Products
+            </a>
+            {% endif %}
+        </nav>
+        
+        <!-- User Menu -->
+        <div class="p-4 border-t border-dark-border">
+            <div class="flex items-center gap-3 p-3 bg-dark-elevated/50 rounded-lg border border-dark-border">
+                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-gold-sm">
+                    <span class="material-icons-outlined text-dark text-sm">person</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-sm truncate text-cream">{{ user.get_full_name|default:user.email }}</div>
+                    <div class="text-xs text-cream/40">{{ user.get_role_display }}</div>
+                </div>
+                <a href="{% url 'accounts:logout' %}" class="p-2 rounded-lg hover:bg-dark-border/50 transition-m3" title="Logout">
+                    <span class="material-icons-outlined text-cream/40 text-lg">logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-h-screen overflow-x-hidden max-w-full">
+        <!-- Top Bar (Mobile) -->
+        <header class="lg:hidden sticky top-0 z-40 bg-dark-card/95 backdrop-blur border-b border-dark-border px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-icons-outlined text-dark text-lg">home_repair_service</span>
+                    </span>
+                    <span class="font-semibold text-cream">Dashboard</span>
+                </div>
+                <a href="{% url 'accounts:profile' %}" class="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center">
+                    <span class="material-icons-outlined text-primary text-lg">person</span>
+                </a>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <main class="flex-1 p-4 lg:p-6 pb-24 lg:pb-6 overflow-x-hidden">
+            {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                <div class="flex items-center gap-3 p-4 rounded-lg card-dark
+                    {% if message.tags == 'error' %}border-red-500/30
+                    {% elif message.tags == 'success' %}border-green-500/30
+                    {% else %}{% endif %}">
+                    <span class="material-icons-outlined {% if message.tags == 'error' %}text-red-400{% elif message.tags == 'success' %}text-green-400{% else %}text-cream/50{% endif %}">
+                        {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}check_circle{% else %}info{% endif %}
+                    </span>
+                    <span class="flex-1 text-sm text-cream">{{ message }}</span>
+                    <button onclick="this.parentElement.remove()" class="p-1 rounded-full hover:bg-dark-card/10">
+                        <span class="material-icons-outlined text-lg text-cream/40">close</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% block dashboard_content %}
+            <!-- Dashboard Header -->
+            <div class="mb-6 lg:mb-8">
+                <h1 class="text-2xl lg:text-3xl font-bold text-cream">Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}! 👋</h1>
+                <p class="text-cream/40 mt-1">Here's what's happening with your business today.</p>
+            </div>
+            
+            {% if is_admin_view %}
+            <!-- Admin Stats Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+                <div class="stat-card stat-card-purple card-dark p-4 lg:p-6 rounded-lg card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center">
+                            <span class="material-icons-outlined text-primary">inventory_2</span>
+                        </div>
+                        <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-lg">All Time</span>
+                    </div>
+                    <div class="text-2xl lg:text-3xl font-bold text-cream">{{ total_orders }}</div>
+                    <div class="text-sm text-cream/40 mt-1">Total Orders</div>
+                </div>
+                
+                <div class="stat-card stat-card-green card-dark p-4 lg:p-6 rounded-lg card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center justify-center">
+                            <span class="material-icons-outlined text-green-400">trending_up</span>
+                        </div>
+                        <span class="text-xs font-medium text-green-400 bg-green-500/10 px-2 py-1 rounded-lg">This Month</span>
+                    </div>
+                    <div class="text-2xl lg:text-3xl font-bold text-cream">₹{{ monthly_revenue|floatformat:0 }}</div>
+                    <div class="text-sm text-cream/40 mt-1">Revenue</div>
+                </div>
+                
+                <div class="stat-card stat-card-amber card-dark p-4 lg:p-6 rounded-lg card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center">
+                            <span class="material-icons-outlined text-amber-400">schedule</span>
+                        </div>
+                        <span class="text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg">In Progress</span>
+                    </div>
+                    <div class="text-2xl lg:text-3xl font-bold text-cream">{{ active_orders }}</div>
+                    <div class="text-sm text-cream/40 mt-1">Active Jobs</div>
+                </div>
+                
+                <div class="stat-card stat-card-red card-dark p-4 lg:p-6 rounded-lg card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center justify-center">
+                            <span class="material-icons-outlined text-red-400">account_balance_wallet</span>
+                        </div>
+                        <span class="text-xs font-medium text-red-400 bg-red-500/10 px-2 py-1 rounded-lg">Pending</span>
+                    </div>
+                    <div class="text-2xl lg:text-3xl font-bold text-cream">₹{{ pending_amount|floatformat:0 }}</div>
+                    <div class="text-sm text-cream/40 mt-1">Outstanding</div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-cream mb-4">Quick Actions</h2>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'quotations:create' %}" class="inline-flex items-center gap-2 px-5 py-3 btn-primary rounded-lg font-medium">
+                        <span class="material-icons-outlined icon-bounce">add</span>
+                        New Quotation
+                    </a>
+                    <a href="{% url 'customers:create' %}" class="inline-flex items-center gap-2 px-5 py-3 bg-green-500/10 text-green-400 border border-green-500/20 rounded-lg font-medium hover:bg-green-500/20 transition-all">
+                        <span class="material-icons-outlined icon-bounce">person_add</span>
+                        Add Customer
+                    </a>
+                    <a href="{% url 'orders:list' %}" class="inline-flex items-center gap-2 px-5 py-3 card-dark rounded-lg font-medium text-cream/60 hover:text-primary hover:border-primary/30 transition-all">
+                        <span class="material-icons-outlined">list_alt</span>
+                        View Orders
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Recent Orders -->
+            {% if recent_orders %}
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-cream">Recent Orders</h2>
+                    <a href="{% url 'orders:list' %}" class="text-primary text-sm font-medium hover:underline">View all →</a>
+                </div>
+                <div class="card-dark rounded-lg overflow-hidden">
+                    {% for order in recent_orders %}
+                    <a href="{% url 'orders:detail' pk=order.pk %}" class="flex items-center gap-4 p-4 list-item-hover {% if not forloop.last %}border-b border-dark-border{% endif %}">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center shrink-0">
+                            <span class="material-icons-outlined text-primary">inventory_2</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-cream">{{ order.order_number }}</div>
+                            <div class="text-sm text-cream/40 truncate">{{ order.customer }}</div>
+                        </div>
+                        <div class="text-right flex items-center gap-2">
+                            <span class="inline-flex px-3 py-1 text-xs font-medium rounded-lg 
+                                {% if order.status == 'draft' %}bg-dark-surface text-cream/50
+                                {% elif order.status == 'approved' %}bg-blue-500/10 text-blue-400
+                                {% elif order.status == 'measuring' or order.status == 'fabrication' %}bg-amber-500/10 text-amber-400
+                                {% elif order.status == 'ready' or order.status == 'installation' %}bg-purple-500/10 text-purple-400
+                                {% elif order.status == 'completed' %}bg-green-500/10 text-green-400
+                                {% elif order.status == 'closed' %}bg-red-500/10 text-red-400
+                                {% else %}bg-dark-surface text-cream/50{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                            <span class="material-icons-outlined text-cream/20 text-lg">chevron_right</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% else %}
+            <!-- Customer Dashboard -->
+            <div class="grid gap-4 mb-8">
+                <div class="card-dark p-6 rounded-lg">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center">
+                            <span class="material-icons-outlined text-primary text-2xl">inventory_2</span>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-cream">{{ active_orders_count }}</div>
+                            <div class="text-cream/40">Active Orders</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if my_orders %}
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-cream mb-4">Your Orders</h2>
+                <div class="card-dark rounded-lg overflow-hidden">
+                    {% for order in my_orders %}
+                    <a href="{% url 'orders:detail' pk=order.pk %}" class="flex items-center gap-4 p-4 hover:bg-dark-elevated/50 transition-m3 {% if not forloop.last %}border-b border-dark-border{% endif %}">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center shrink-0">
+                            <span class="material-icons-outlined text-primary">inventory_2</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-cream">{{ order.order_number }}</div>
+                            <div class="text-sm text-cream/40">{{ order.created_at|date:"d M Y" }}</div>
+                        </div>
+                        <span class="inline-flex px-3 py-1 text-xs font-medium rounded-lg status-{{ order.status }}">{{ order.get_status_display }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endblock %}
+        </main>
+        
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-dark-card/95 backdrop-blur border-t border-dark-border z-40" style="padding-bottom: env(safe-area-inset-bottom, 0)">
+            <div class="grid grid-cols-5 items-center justify-items-center py-2 w-full">
+                <a href="{% url 'dashboard:index' %}" class="flex flex-col items-center py-2 px-4 text-primary">
+                    <span class="material-icons-outlined">dashboard</span>
+                    <span class="text-xs mt-1 font-medium">Home</span>
+                </a>
+                <a href="{% url 'orders:list' %}" class="flex flex-col items-center py-2 px-4 text-cream/40 hover:text-primary transition-m3">
+                    <span class="material-icons-outlined">inventory_2</span>
+                    <span class="text-xs mt-1">Orders</span>
+                </a>
+                {% if user.is_admin %}
+                <a href="{% url 'quotations:create' %}" class="flex flex-col items-center py-2 px-4">
+                    <div class="w-12 h-12 -mt-6 bg-primary rounded-lg flex items-center justify-center shadow-gold-md">
+                        <span class="material-icons-outlined text-dark text-xl">add</span>
+                    </div>
+                </a>
+                {% else %}
+                <a href="{% url 'quotations:list' %}" class="flex flex-col items-center py-2 px-4 text-cream/40 hover:text-primary transition-m3">
+                    <span class="material-icons-outlined">request_quote</span>
+                    <span class="text-xs mt-1">Quotation</span>
+                </a>
+                {% endif %}
+                <a href="{% url 'billing:list' %}" class="flex flex-col items-center py-2 px-4 text-cream/40 hover:text-primary transition-m3">
+                    <span class="material-icons-outlined">receipt_long</span>
+                    <span class="text-xs mt-1">Invoices</span>
+                </a>
+                <a href="{% url 'quotations:list' %}" class="flex flex-col items-center py-2 px-4 text-cream/40 hover:text-primary transition-m3">
+                    <span class="material-icons-outlined">request_quote</span>
+                    <span class="text-xs mt-1">Quotation</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,95 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="mb-4 lg:mb-6">
+    <a href="{% url 'billing:list' %}" class="inline-flex items-center gap-2 text-cream/50 hover:text-primary transition-m3">
+        <span class="material-icons-outlined">arrow_back</span>
+        Back to Invoices
+    </a>
+</div>
+
+<!-- Invoice Header -->
+<div class="bg-dark-card rounded-lg p-4 lg:p-6 mb-4 lg:mb-6 shadow-elevation-1">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div>
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+                <h1 class="text-xl lg:text-2xl font-bold text-cream">{{ invoice.invoice_number }}</h1>
+                <span class="px-3 py-1 rounded-full text-sm font-medium 
+                    {% if invoice.status == 'paid' %}bg-green-500/10 text-green-400
+                    {% elif invoice.status == 'partial' %}bg-amber-500/10 text-amber-400
+                    {% elif invoice.is_overdue %}bg-red-500/10 text-red-400
+                    {% else %}bg-dark-surface text-cream/60{% endif %}">
+                    {% if invoice.is_overdue %}Overdue{% else %}{{ invoice.get_status_display }}{% endif %}
+                </span>
+            </div>
+            <p class="text-cream/50 text-sm lg:text-base">{{ invoice.customer }}</p>
+            <p class="text-xs lg:text-sm text-cream/40">Invoice: {{ invoice.invoice_date|date:"d M Y" }} • Due: {{ invoice.due_date|date:"d M Y" }}</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <a href="{% url 'billing:pdf' pk=invoice.pk %}" class="inline-flex items-center gap-2 px-3 lg:px-4 py-2 bg-dark-surface text-cream/60 rounded-xl font-medium hover:bg-dark-elevated transition-m3 text-sm">
+                <span class="material-icons-outlined text-lg">picture_as_pdf</span>
+                Download PDF
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Amount Summary Cards -->
+<div class="grid grid-cols-3 gap-2 lg:gap-4 mb-4 lg:mb-6">
+    <div class="bg-dark-card rounded-lg lg:rounded-lg p-3 lg:p-6 shadow-elevation-1">
+        <div class="text-cream/40 text-xs lg:text-sm">Total</div>
+        <div class="text-lg lg:text-2xl font-bold text-cream">₹{{ invoice.total|floatformat:0 }}</div>
+    </div>
+    <div class="bg-gradient-to-br from-emerald-50 to-green-100 rounded-lg lg:rounded-lg p-3 lg:p-6">
+        <div class="text-green-400 text-xs lg:text-sm">Paid</div>
+        <div class="text-lg lg:text-2xl font-bold text-green-400">₹{{ invoice.paid_amount|floatformat:0 }}</div>
+    </div>
+    <div class="{% if invoice.balance_due > 0 %}bg-gradient-to-br from-rose-50 to-red-100{% else %}bg-dark-card shadow-elevation-1{% endif %} rounded-lg lg:rounded-lg p-3 lg:p-6">
+        <div class="{% if invoice.balance_due > 0 %}text-red-400{% else %}text-cream/40{% endif %} text-xs lg:text-sm">Due</div>
+        <div class="text-lg lg:text-2xl font-bold {% if invoice.balance_due > 0 %}text-red-400{% else %}text-cream{% endif %}">₹{{ invoice.balance_due|floatformat:0 }}</div>
+    </div>
+</div>
+
+<!-- Add Payment Form (Admin) -->
+{% if user.is_admin and invoice.balance_due > 0 %}
+<div class="bg-dark-card rounded-lg p-4 lg:p-6 mb-4 lg:mb-6 shadow-elevation-1">
+    <h3 class="font-semibold text-cream mb-4">Record Payment</h3>
+    <form method="post" action="{% url 'billing:add_payment' pk=invoice.pk %}" class="flex flex-col lg:flex-row gap-3">
+        {% csrf_token %}
+        <div class="flex gap-2 flex-1">
+            <input type="number" name="amount" step="0.01" max="{{ invoice.balance_due }}" placeholder="Amount" required class="w-28 lg:w-32 px-3 lg:px-4 py-2 rounded-xl border border-dark-border bg-dark focus:border-primary outline-none text-sm">
+            <select name="method" class="flex-1 lg:flex-none px-3 lg:px-4 py-2 rounded-xl border border-dark-border bg-dark focus:border-primary outline-none text-sm">
+                {% for value, label in payment_methods %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <input type="text" name="reference" placeholder="Reference/UPI ID" class="w-full lg:flex-1 px-3 lg:px-4 py-2 rounded-xl border border-dark-border bg-dark focus:border-primary outline-none text-sm">
+        <button type="submit" class="w-full lg:w-auto px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm">
+            Add Payment
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<!-- Payment History -->
+{% if payments %}
+<div class="bg-dark-card rounded-lg p-4 lg:p-6 shadow-elevation-1">
+    <h3 class="font-semibold text-cream mb-4">Payment History</h3>
+    <div class="space-y-3">
+        {% for payment in payments %}
+        <div class="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
+            <div class="w-9 h-9 lg:w-10 lg:h-10 bg-green-500/10 rounded-full flex items-center justify-center shrink-0">
+                <span class="material-icons-outlined text-green-600 text-sm lg:text-base">payments</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="font-semibold text-cream text-sm lg:text-base">₹{{ payment.amount|floatformat:2 }}</div>
+                <div class="text-xs lg:text-sm text-cream/40">{{ payment.get_method_display }} • {{ payment.payment_date|date:"d M Y" }}</div>
+                {% if payment.reference %}<div class="text-xs text-cream/30 truncate">Ref: {{ payment.reference }}</div>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

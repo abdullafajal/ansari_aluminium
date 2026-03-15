@@ -1,0 +1,37 @@
+{% extends "website/base_website.html" %}
+
+{% block title %}Terms of Service - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Terms and conditions governing the use of Ansari Aluminium's website and services.{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-dark">
+    <div class="max-w-4xl mx-auto px-4">
+        <h1 class="text-4xl font-bold text-cream mb-8">Terms of Service</h1>
+        
+        <div class="card-dark p-8 rounded-lg text-cream/60 leading-relaxed">
+            <p class="mb-4 text-cream/40">Last updated: {% now "F j, Y" %}</p>
+            
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">1. Agreement to Terms</h3>
+            <p>By accessing our website and using our services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>
+            
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">2. Intellectual Property</h3>
+            <p>The content, organization, graphics, design, compilation, and other matters related to the Site are protected under applicable copyrights, trademarks, and other proprietary (including but not limited to intellectual property) rights.</p>
+
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">3. Use of Services</h3>
+            <p>You agree to use our services only for lawful purposes. You are prohibited from violating or attempting to violate the security of the Site.</p>
+
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">4. Limitation of Liability</h3>
+            <p>In no event will Ansari Aluminium be liable for any direct, indirect, special, punitive, exemplary, or consequential losses or damages of whatsoever kind arising out of your use or access to the Site.</p>
+
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">5. Changes to Terms</h3>
+            <p>We reserve the right to modify these terms at any time. We will do so by posting and drawing attention to the updated terms on the Site. Your decision to continue to visit and make use of the Site after such changes have been made constitutes your formal acceptance of the new Terms of Service.</p>
+
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">6. Governing Law</h3>
+            <p>These terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions.</p>
+            
+            <h3 class="text-xl font-bold text-cream mt-6 mb-3">7. Contact Information</h3>
+            <p>Questions about the Terms of Service should be sent to us at {{ global_preferences.contact__email }}.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

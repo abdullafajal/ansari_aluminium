@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Register - {{ SITE_NAME }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-dark flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="{% url 'website:home' %}" class="inline-flex items-center gap-3">
+                <span class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                    <span class="material-icons-outlined text-white text-2xl">home_repair_service</span>
+                </span>
+                <span class="font-bold text-2xl text-cream">{{ SITE_NAME }}</span>
+            </a>
+        </div>
+        
+        <!-- Register Card -->
+        <div class="bg-dark-card rounded-lg p-8 shadow-elevation-1">
+            <h1 class="text-2xl font-bold text-cream text-center mb-2">Create account</h1>
+            <p class="text-cream/50 text-center mb-8">Start managing your orders today</p>
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_first_name" class="block text-sm font-medium text-cream/60 mb-2">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div>
+                        <label for="id_last_name" class="block text-sm font-medium text-cream/60 mb-2">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-cream/60 mb-2">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="id_password1" class="block text-sm font-medium text-cream/60 mb-2">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="id_password2" class="block text-sm font-medium text-cream/60 mb-2">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-m3 shadow-elevation-1">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-cream/50 text-sm">
+                    Already have an account? 
+                    <a href="{% url 'accounts:login' %}" class="text-primary font-medium hover:underline">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

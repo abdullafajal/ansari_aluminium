@@ -1,0 +1,48 @@
+{% extends "website/base_website.html" %}
+
+{% block title %}Sitemap - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Navigate the Ansari Aluminium website with our comprehensive sitemap. Find pages for products, services, and company information.{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-dark">
+    <div class="max-w-4xl mx-auto px-4">
+        <h1 class="text-4xl font-bold text-cream mb-8">Sitemap</h1>
+        
+        <div class="card-dark p-8 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Main Pages -->
+                <div>
+                    <h3 class="text-xl font-bold text-cream mb-4 border-b border-dark-border pb-2">Main Pages</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'website:home' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Home</a></li>
+                        <li><a href="{% url 'website:products' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Products</a></li>
+                        <li><a href="{% url 'website:portfolio' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Portfolio</a></li>
+                        <li><a href="{% url 'website:about' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> About Us</a></li>
+                        <li><a href="{% url 'website:contact' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Contact Us</a></li>
+                        <li><a href="{% url 'orders:track' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Track Order</a></li>
+                    </ul>
+                </div>
+
+                <!-- Product Categories -->
+                <div>
+                    <h3 class="text-xl font-bold text-cream mb-4 border-b border-dark-border pb-2">Categories</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'website:products' %}?category=windows" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Windows</a></li>
+                        <li><a href="{% url 'website:products' %}?category=doors" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Doors</a></li>
+                        <li><a href="{% url 'website:products' %}?category=glass-partitions" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Glass Partitions</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div class="md:col-span-2">
+                    <h3 class="text-xl font-bold text-cream mb-4 border-b border-dark-border pb-2">Legal</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'website:privacy_policy' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Privacy Policy</a></li>
+                        <li><a href="{% url 'website:terms' %}" class="text-cream/50 hover:text-primary transition-colors flex items-center gap-2"><span class="material-icons-outlined text-sm text-cream/20">arrow_forward</span> Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

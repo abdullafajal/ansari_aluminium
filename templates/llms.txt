@@ -1,0 +1,28 @@
+# Ansari Aluminium Project Overview
+
+> A comprehensive platform for Aluminium & UPVC fabrication services.
+
+Ansari Aluminium is a premier fabrication enterprise specializing in high-performance Aluminium and UPVC architectural solutions. The platform serves as a digital storefront and operations hub, streamlining the customized manufacturing and installation of energy-efficient windows, doors, and glass partitions.
+
+## Core Services
+- UPVC & Aluminium Windows (Sliding, Casement, Tilt & Turn)
+- Aluminium Doors & Glass Partitions
+- Balcony Coverings & Safety Jali Doors
+- Structural Glazing & Toughened Glass
+- Profile Panels & Architectural Cladding
+- Premium Hardware Supply
+
+## Business Operations
+- Product Catalog with dynamic categories
+- Quotation Generation with PDF export
+- Order Management with real-time tracking
+- GST-compliant Billing & Invoicing
+- Customer Relationship Management (CRM)
+- Admin Dashboard for business insights
+
+## Technical Stack
+- Backend: Django (Python)
+- Frontend: HTML5, Tailwind CSS CDN, JavaScript
+- Database: PostgreSQL (Production), SQLite (Development)
+- PDF Generation: html2pdf.js (client-side)
+- PWA: Progressive Web App support

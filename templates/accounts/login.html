@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Login - {{ SITE_NAME }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-dark flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="{% url 'website:home' %}" class="inline-flex items-center gap-3">
+                <span class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                    <span class="material-icons-outlined text-white text-2xl">home_repair_service</span>
+                </span>
+                <span class="font-bold text-2xl text-cream">{{ SITE_NAME }}</span>
+            </a>
+        </div>
+        
+        <!-- Login Card -->
+        <div class="bg-dark-card rounded-lg p-8 shadow-elevation-1">
+            <h1 class="text-2xl font-bold text-cream text-center mb-2">Welcome back</h1>
+            <p class="text-cream/50 text-center mb-8">Sign in to your account</p>
+            
+            {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                <div class="flex items-center gap-3 p-4 rounded-xl text-sm
+                    {% if message.tags == 'error' %}bg-red-500/10 text-red-400{% else %}bg-dark-surface text-gray-800{% endif %}">
+                    <span class="material-icons-outlined">{% if message.tags == 'error' %}error{% else %}info{% endif %}</span>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-cream/60 mb-2">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="id_password" class="block text-sm font-medium text-cream/60 mb-2">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="w-full py-3 bg-primary text-dark rounded-lg font-medium hover:bg-primary-light transition-m3 shadow-gold-sm">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-cream/50 text-sm">
+                    Need an account? Contact your administrator.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Back to Home -->
+        <div class="mt-6 text-center">
+            <a href="{% url 'website:home' %}" class="inline-flex items-center gap-2 text-cream/50 text-sm hover:text-primary transition-m3">
+                <span class="material-icons-outlined text-lg">arrow_back</span>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

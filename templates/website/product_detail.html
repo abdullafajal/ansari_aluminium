@@ -1,0 +1,171 @@
+{% extends "website/base_website.html" %}
+
+{% block title %}{{ product.name }} - {{ product.category.name }} | {{ SITE_NAME }}{% endblock %}
+
+{% block meta_description %}{{ product.description|striptags|truncatewords:25 }}{% endblock %}
+{% block meta_keywords %}{{ product.name }}, {{ product.category.name }}, UPVC, Aluminium, Fabrication{% endblock %}
+
+{% block og_title %}{{ product.name }}{% endblock %}
+{% block og_description %}{{ product.description|striptags|truncatewords:30 }}{% endblock %}
+{% block og_image %}{% if product.image %}{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}{% endif %}{% endblock %}
+
+{% block twitter_title %}{{ product.name }}{% endblock %}
+{% block twitter_description %}{{ product.description|striptags|truncatewords:30 }}{% endblock %}
+{% block twitter_image %}{% if product.image %}{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="bg-dark min-h-screen pb-20">
+    
+    <!-- Breadcrumb -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <nav class="flex text-sm font-medium text-cream/40">
+            <a href="{% url 'website:home' %}" class="hover:text-primary transition-colors">Home</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'website:products' %}" class="hover:text-primary transition-colors">Products</a>
+            <span class="mx-2">/</span>
+            <span class="text-cream">{{ product.name }}</span>
+        </nav>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+            
+            <!-- Gallery Section -->
+            <div class="space-y-4">
+                <div class="aspect-[4/3] card-dark rounded-lg overflow-hidden relative group">
+                    {% if product.image %}
+                    <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-opacity duration-300">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-cream/20">
+                        <span class="material-icons-outlined text-8xl">image</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if product.images.all %}
+                <div class="grid grid-cols-4 gap-3">
+                    <div class="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-primary thumbnail-btn" data-src="{{ product.image.url }}">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="w-full h-full object-cover">
+                        {% endif %}
+                    </div>
+                    {% for img in product.images.all %}
+                    <div class="aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-dark-border hover:border-primary/50 opacity-70 hover:opacity-100 transition-all thumbnail-btn" data-src="{{ img.image.url }}">
+                        <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const mainImage = document.getElementById('main-product-image');
+                        const thumbnails = document.querySelectorAll('.thumbnail-btn');
+
+                        thumbnails.forEach(thumb => {
+                            thumb.addEventListener('click', () => {
+                                const newSrc = thumb.getAttribute('data-src');
+                                mainImage.style.opacity = '0';
+                                setTimeout(() => {
+                                    mainImage.src = newSrc;
+                                    mainImage.style.opacity = '1';
+                                }, 150);
+                                thumbnails.forEach(t => {
+                                    t.classList.remove('border-primary', 'opacity-100');
+                                    t.classList.add('border-dark-border', 'opacity-70');
+                                });
+                                thumb.classList.remove('border-dark-border', 'opacity-70');
+                                thumb.classList.add('border-primary', 'opacity-100');
+                            });
+                        });
+                    });
+                </script>
+                {% endif %}
+            </div>
+            
+            <!-- Product Info -->
+            <div class="lg:py-4">
+                <div class="mb-6">
+                    <span class="inline-block px-3 py-1 bg-primary/10 border border-primary/20 text-primary text-sm font-bold rounded-lg mb-4">
+                        {{ product.category.name }}
+                    </span>
+                    <h1 class="text-4xl md:text-5xl font-bold text-cream mb-4">{{ product.name }}</h1>
+                    <p class="text-2xl font-medium text-cream">
+                        ₹{{ product.base_price|floatformat:0 }} <span class="text-base text-cream/40 font-normal">/ {{ product.unit }}</span>
+                    </p>
+                </div>
+                
+                <!-- Description -->
+                <div class="prose prose-lg prose-invert text-cream/50 mb-8">
+                    {{ product.description|linebreaks }}
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-10 border-b border-dark-border pb-10">
+                    <a href="{% url 'website:contact' %}?product={{ product.name|urlencode }}" class="flex-1 px-8 py-4 bg-primary text-dark text-center rounded-lg font-bold hover:bg-primary-light shadow-gold-md hover:shadow-gold-lg transition-all">
+                        Get a Quote
+                    </a>
+                    <a href="tel:{{ global_preferences.contact__phone }}" class="flex-1 px-8 py-4 bg-dark-card text-cream text-center rounded-lg font-bold border border-dark-border hover:border-primary/30 transition-all flex items-center justify-center gap-2">
+                        <span class="material-icons-outlined">call</span>
+                        Call Expert
+                    </a>
+                </div>
+                
+                <!-- Specifications -->
+                <div>
+                    <h3 class="text-xl font-bold text-cream mb-4 flex items-center gap-2">
+                        <span class="material-icons-outlined text-cream/30">tune</span> Specifications
+                    </h3>
+                    <div class="card-dark rounded-lg overflow-hidden">
+                        <table class="w-full text-sm text-left">
+                            <tbody class="divide-y divide-dark-border">
+                                {% for key, value in product.specifications.items %}
+                                <tr class="hover:bg-dark-elevated/50">
+                                    <td class="py-4 px-6 font-medium text-cream/40 w-1/3">{{ key }}</td>
+                                    <td class="py-4 px-6 text-cream">{{ value }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td class="py-6 px-6 text-center text-cream/30 italic" colspan="2">No specific technical details available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="max-w-7xl mx-auto px-4 mt-20 pt-10 border-t border-dark-border">
+        <h2 class="text-2xl font-bold text-cream mb-8">You might also be interested in</h2>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for item in related_products %}
+            <a href="{% url 'website:product_detail' item.slug %}" class="group block">
+                <div class="aspect-square card-dark rounded-lg overflow-hidden mb-3 relative">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-dark-surface text-cream/10">
+                        <span class="material-icons-outlined text-4xl">image</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <h4 class="font-bold text-cream group-hover:text-primary truncate transition-colors">{{ item.name }}</h4>
+                <p class="text-sm text-cream/40">From ₹{{ item.base_price|floatformat:0 }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Sticky Mobile Action -->
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-dark/95 backdrop-blur-xl border-t border-dark-border md:hidden z-40">
+    <a href="{% url 'website:contact' %}?product={{ product.name|urlencode }}" class="block w-full py-3 bg-primary text-dark text-center rounded-lg font-bold shadow-gold-md">
+        Enquire Now
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="mb-6">
+    <a href="{% url 'customers:list' %}" class="inline-flex items-center gap-2 text-cream/50 hover:text-primary transition-m3 mb-4">
+        <span class="material-icons-outlined">arrow_back</span>
+        Back to Customers
+    </a>
+    <h1 class="text-2xl font-bold text-cream">{{ title }}</h1>
+</div>
+
+<form method="post" class="bg-dark-card rounded-lg p-6 lg:p-8">
+    {% csrf_token %}
+    {% if enquiry_id %}
+    <input type="hidden" name="enquiry_id" value="{{ enquiry_id }}">
+    {% endif %}
+    
+    <div class="grid gap-6 lg:grid-cols-2">
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Contact Person *</label>
+            {{ form.contact_person }}
+            {% if form.contact_person.errors %}<p class="text-red-400 text-sm mt-1">{{ form.contact_person.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Company Name</label>
+            {{ form.company_name }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Email</label>
+            {{ form.email }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Phone *</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<p class="text-red-400 text-sm mt-1">{{ form.phone.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Alternate Phone</label>
+            {{ form.alternate_phone }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">GST Number</label>
+            {{ form.gst_number }}
+        </div>
+        
+        <div class="lg:col-span-2">
+            <label class="block text-sm font-medium text-cream/60 mb-2">Address</label>
+            {{ form.address }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">City</label>
+            {{ form.city }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">State</label>
+            {{ form.state }}
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-cream/60 mb-2">Pincode</label>
+            {{ form.pincode }}
+        </div>
+        
+        <div class="lg:col-span-2">
+            <label class="block text-sm font-medium text-cream/60 mb-2">Notes</label>
+            {{ form.notes }}
+        </div>
+    </div>
+    
+    <div class="flex gap-3 mt-8">
+        <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-m3">
+            {% if customer %}Update{% else %}Create{% endif %} Customer
+        </button>
+        <a href="{% url 'customers:list' %}" class="px-6 py-3 bg-dark-surface text-cream/60 rounded-xl font-medium hover:bg-dark-elevated transition-m3">
+            Cancel
+        </a>
+    </div>
+</form>
+{% endblock %}

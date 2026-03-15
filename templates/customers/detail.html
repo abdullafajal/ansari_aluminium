@@ -1,0 +1,86 @@
+{% extends "dashboard/index.html" %}
+
+{% block dashboard_content %}
+<div class="mb-6">
+    <a href="{% url 'customers:list' %}" class="inline-flex items-center gap-2 text-cream/50 hover:text-primary transition-m3 mb-4">
+        <span class="material-icons-outlined">arrow_back</span>
+        Back to Customers
+    </a>
+</div>
+
+<!-- Customer Header -->
+<div class="bg-dark-card rounded-lg p-6 mb-6">
+    <div class="flex items-start gap-4">
+        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+            <span class="material-icons-outlined text-primary text-2xl">person</span>
+        </div>
+        <div class="flex-1">
+            <h1 class="text-2xl font-bold text-cream">{{ customer.contact_person }}</h1>
+            {% if customer.company_name %}<p class="text-cream/50 font-medium">{{ customer.company_name }}</p>{% endif %}
+            <div class="flex flex-wrap gap-4 mt-3 text-sm text-cream/50">
+                <span class="flex items-center gap-1"><span class="material-icons-outlined text-lg">phone</span> {{ customer.phone }}</span>
+                {% if customer.email %}<span class="flex items-center gap-1"><span class="material-icons-outlined text-lg">email</span> {{ customer.email }}</span>{% endif %}
+            </div>
+        </div>
+        {% if user.is_admin %}
+        <a href="{% url 'customers:edit' pk=customer.pk %}" class="px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary hover:text-white transition-m3">
+            Edit
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Details Grid -->
+<div class="grid lg:grid-cols-2 gap-6">
+    <!-- Address -->
+    <div class="bg-dark-card rounded-lg p-6">
+        <h3 class="font-semibold text-cream mb-4 flex items-center gap-2">
+            <span class="material-icons-outlined text-primary">location_on</span>
+            Address
+        </h3>
+        <p class="text-cream/50">
+            {{ customer.address }}<br>
+            {{ customer.city }}, {{ customer.state }} - {{ customer.pincode }}
+        </p>
+    </div>
+    
+    <!-- Business Info -->
+    <div class="bg-dark-card rounded-lg p-6">
+        <h3 class="font-semibold text-cream mb-4 flex items-center gap-2">
+            <span class="material-icons-outlined text-primary">business</span>
+            Business Info
+        </h3>
+        {% if customer.gst_number %}
+        <div class="mb-2">
+            <span class="text-sm text-cream/40">GST Number</span>
+            <p class="font-medium text-cream">{{ customer.gst_number }}</p>
+        </div>
+        {% endif %}
+        <div>
+            <span class="text-sm text-cream/40">Customer Since</span>
+            <p class="font-medium text-cream">{{ customer.created_at|date:"d M Y" }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Quotations -->
+{% if quotations %}
+<div class="mt-6">
+    <h3 class="font-semibold text-cream mb-4">Recent Quotations</h3>
+    <div class="bg-dark-card rounded-lg overflow-hidden">
+        {% for quote in quotations %}
+        <a href="{% url 'quotations:detail' pk=quote.pk %}" class="flex items-center gap-4 p-4 hover:bg-dark-surface transition-m3 {% if not forloop.last %}border-b border-dark-border{% endif %}">
+            <div class="flex-1">
+                <div class="font-medium text-cream">{{ quote.quote_number }}</div>
+                <div class="text-sm text-cream/40">{{ quote.created_at|date:"d M Y" }}</div>
+            </div>
+            <div class="text-right">
+                <div class="font-semibold">₹{{ quote.total|floatformat:0 }}</div>
+                <span class="text-xs px-2 py-1 rounded-full bg-dark-surface text-cream/60">{{ quote.get_status_display }}</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

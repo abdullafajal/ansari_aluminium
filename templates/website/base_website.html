@@ -163,10 +163,13 @@
 <body class="bg-dark text-cream flex flex-col min-h-screen">
 
     <!-- Mobile App Header (Fixed Top) -->
-    <header id="mobile-app-header" class="md:hidden fixed top-0 left-0 right-0 h-16 bg-dark/95 backdrop-blur-xl z-50 flex items-center justify-between px-4 border-b border-dark-border pt-safe-top transition-transform duration-300">
+    <header id="mobile-app-header" class="md:hidden fixed top-0 left-0 right-0 h-16 bg-dark/95 backdrop-blur-xl z-50 flex items-center justify-between px-4 border-b border-primary/30 pt-safe-top transition-transform duration-300">
         <a href="{% url 'website:home' %}" class="flex items-center gap-2">
-            <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-8 w-auto">
-            <span class="text-xl font-light tracking-tight text-cream/80 hidden sm:inline">Aluminium</span>
+            <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-5 w-auto">
+            <div class="flex items-baseline gap-1">
+                <span class="text-lg font-bold tracking-tight text-gold-gradient">Ansari</span>
+                <span class="text-lg font-light tracking-tight text-cream/80">Aluminium</span>
+            </div>
         </a>
         
         <div class="flex items-center gap-2">
@@ -183,12 +186,15 @@
     <div class="md:hidden h-16 pt-safe-top"></div>
 
     <!-- Header (Desktop Only) -->
-    <header class="hidden md:block fixed top-0 w-full z-50 transition-all duration-300 glass-nav" id="main-header">
+    <header class="hidden md:block fixed top-0 w-full z-50 transition-all duration-300 glass-nav border-b border-primary/20" id="main-header">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <!-- Logo -->
             <a href="{% url 'website:home' %}" class="flex items-center gap-3 group">
-                <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-10 w-auto group-hover:opacity-90 transition-opacity">
-                <span class="text-xl font-light tracking-tight text-cream/80 group-hover:text-cream transition-colors">Aluminium</span>
+                <img src="{% static 'assets/icons/logo-cream-gold.png' %}" alt="Ansari Aluminium" class="h-6 w-auto group-hover:opacity-90 transition-opacity">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-xl font-bold tracking-tight text-gold-gradient group-hover:opacity-90 transition-opacity">Ansari</span>
+                    <span class="text-xl font-light tracking-tight text-cream/80 group-hover:text-cream transition-colors">Aluminium</span>
+                </div>
             </a>
 
             <!-- Desktop Nav -->
@@ -357,7 +363,7 @@
     </footer>
 
     <!-- Bottom Mobile Navigation (Floating Pill) -->
-    <nav class="md:hidden fixed bottom-6 left-6 right-6 bg-[#0F0F1A] rounded-full shadow-2xl z-50 px-6 py-3 border border-dark-border/50" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
+    <nav class="md:hidden fixed bottom-6 left-6 right-6 bg-[#0F0F1A] rounded-full shadow-2xl z-50 px-6 py-3 border border-primary/30" style="padding-bottom: max(12px, env(safe-area-inset-bottom, 12px))">
         <div class="flex items-center justify-between w-full">
             <!-- Home -->
             <a href="{% url 'website:home' %}" class="flex flex-col items-center p-2 {% if request.resolver_match.url_name == 'home' %}text-primary bg-primary/20 rounded-full{% else %}text-cream/40 hover:text-primary transition-m3{% endif %}">

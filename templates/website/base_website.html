@@ -156,6 +156,15 @@
         ::-webkit-scrollbar-track { background: #0F0F1A; }
         ::-webkit-scrollbar-thumb { background: #2A2A4A; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #D4A853; }
+        /* Pulsating live dot */
+        @keyframes pulse-gold {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 168, 83, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(212, 168, 83, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 168, 83, 0); }
+        }
+        .animate-pulse-gold {
+            animation: pulse-gold 2s infinite;
+        }
     </style>
     {% block extra_head %}{% endblock %}
     {% progressive_web_app_meta %}

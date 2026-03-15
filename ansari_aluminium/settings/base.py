@@ -151,3 +151,9 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_DIR = 'ltr'
 PWA_LANG = 'en-US'
+
+# Session Configuration - Disable Auto Logout
+# Keep the session cookie alive for 10 years (effectively never expiring)
+SESSION_COOKIE_AGE = 315360000  # 10 years in seconds
+SESSION_SAVE_EVERY_REQUEST = True  # Refresh the expiration time on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Ensure session stays active even if they close their browser

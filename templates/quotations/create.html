@@ -40,6 +40,16 @@
     .ts-dropdown .option:hover {
         background: #1E2A4A !important;
     }
+    ::placeholder {
+        color: rgba(245, 240, 232, 0.3) !important;
+        opacity: 1; /* Firefox */
+    }
+    ::-ms-input-placeholder { /* Edge 12-18 */
+        color: rgba(245, 240, 232, 0.3) !important;
+    }
+    .ts-control .item, .ts-control input::placeholder {
+        color: rgba(245, 240, 232, 0.3) !important;
+    }
 </style>
 {% endblock %}
 

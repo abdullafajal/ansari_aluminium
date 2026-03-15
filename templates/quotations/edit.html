@@ -1,5 +1,16 @@
 {% extends "dashboard/index.html" %}
 
+{% block extra_head %}
+<style>
+    ::placeholder {
+        color: rgba(245, 240, 232, 0.3) !important;
+        opacity: 1; /* Firefox */
+    }
+    ::-ms-input-placeholder { /* Edge 12-18 */
+        color: rgba(245, 240, 232, 0.3) !important;
+    }
+</style>
+{% endblock %}
 {% block dashboard_content %}
 <div class="mb-6">
     <a href="{% url 'quotations:detail' pk=quotation.pk %}" class="inline-flex items-center gap-2 text-cream/50 hover:text-primary transition-m3 mb-4">
